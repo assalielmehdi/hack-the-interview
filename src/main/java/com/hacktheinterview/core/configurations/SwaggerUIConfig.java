@@ -13,7 +13,7 @@ public class SwaggerUIConfig {
   public Docket docket() {
     return new Docket(DocumentationType.SWAGGER_2)
       .select()
-      .apis(RequestHandlerSelectors.any())
+      .apis(RequestHandlerSelectors.basePackage("com.hacktheinterview.core"))
       .paths(PathSelectors.any())
       .build();
   }
