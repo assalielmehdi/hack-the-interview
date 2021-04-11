@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: ${DB_HOST:jdbc:mysql://localhost}:${DB_PORT:3306}/${DB_NAME:hacktheinterview}
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:hacktheinterview}
     username: ${DB_USER:root}
     password: ${DB_PWD:password}
   jpa:
