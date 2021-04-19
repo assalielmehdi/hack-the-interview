@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Required software: node, npm, maven
+
 build_ui() {
   cd ui/
   npm install
@@ -10,8 +12,9 @@ build_ui() {
 build_api() {
   cd api/
   rm -rf src/main/resources/static/*
+  test -f src/main/resources/static || mkdir src/main/resources/static
   cp -R ../ui/build/* src/main/resources/static/
-  ./mvnw clean install
+  mvn clean install
   cd ../
 }
 
