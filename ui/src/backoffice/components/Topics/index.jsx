@@ -14,6 +14,8 @@ import {
   TableRow,
   TextField,
   IconButton,
+  Grid,
+  Button,
 } from "@material-ui/core";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
@@ -21,18 +23,13 @@ import { Context } from "../../../context";
 
 const columns = [
   {
-    key: "email",
-    label: "Email",
+    key: "name",
+    label: "Name",
     show: true,
   },
   {
-    key: "firstName",
-    label: "First Name",
-    show: true,
-  },
-  {
-    key: "lastName",
-    label: "Last Name",
+    key: "description",
+    label: "Description",
     show: true,
   },
 ];
@@ -46,14 +43,14 @@ const useStyles = makeStyles({
   },
 });
 
-const Users = () => {
+const Topics = () => {
   const classes = useStyles();
 
-  const { users } = useContext(Context);
+  const { topics } = useContext(Context);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [filter, setFilter] = useState({ text: "", users });
+  const [filter, setFilter] = useState({ text: "", topics });
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -73,27 +70,43 @@ const Users = () => {
       }}
     >
       <Container maxWidth={false}>
-        <Box display="flex" alignItems="flex-end" mb={4}>
-          <SearchOutlinedIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-          <TextField
-            label="Filter"
-            variant="standard"
-            value={filter.text}
-            onChange={(e) =>
-              setFilter({
-                text: e.target.value,
-                users: users.filter(
-                  (user) =>
-                    Object.values(user).find((field) =>
-                      String(field)
-                        .toLowerCase()
-                        .includes(e.target.value.toLowerCase())
-                    ) !== undefined
-                ),
-              })
-            }
-          />
-        </Box>
+        <Grid container spacing={2} mb={3}>
+          <Grid item xs={12} sm={6} display="flex" alignItems="flex-end" mb={1}>
+            <SearchOutlinedIcon
+              sx={{ color: "action.active", mr: 1, my: 0.5 }}
+            />
+            <TextField
+              label="Filter"
+              variant="standard"
+              value={filter.text}
+              onChange={(e) =>
+                setFilter({
+                  text: e.target.value,
+                  topics: topics.filter(
+                    (topic) =>
+                      Object.values(topic).find((field) =>
+                        String(field)
+                          .toLowerCase()
+                          .includes(e.target.value.toLowerCase())
+                      ) !== undefined
+                  ),
+                })
+              }
+            />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            display="flex"
+            alignItems="flex-end"
+            justifyContent="flex-end"
+          >
+            <RouterLink to="/backoffice/topics/add">
+              <Button>Add Topic</Button>
+            </RouterLink>
+          </Grid>
+        </Grid>
 
         <Paper className={classes.root}>
           <TableContainer className={classes.container}>
@@ -109,27 +122,27 @@ const Users = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filter.users
+                {filter.topics
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((user) => {
+                  .map((topic) => {
                     return (
                       <TableRow
                         hover
                         role="checkbox"
                         tabIndex={-1}
-                        key={user.id}
+                        key={topic.id}
                       >
                         {columns
                           .filter(({ show }) => show)
                           .map(({ key }) => {
                             return (
-                              <TableCell key={`${user.id}-${key}`}>
-                                {user[key]}
+                              <TableCell key={`${topic.id}-${key}`}>
+                                {topic[key]}
                               </TableCell>
                             );
                           })}
                         <TableCell>
-                          <RouterLink to={`/backoffice/users/${user.id}`}>
+                          <RouterLink to={`/backoffice/topics/${topic.id}`}>
                             <IconButton>
                               <OpenInNewIcon fontSize="small" />
                             </IconButton>
@@ -144,7 +157,7 @@ const Users = () => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25, 50, 100]}
             component="div"
-            count={filter.users.length}
+            count={filter.topics.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -156,4 +169,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Topics;
