@@ -11,8 +11,8 @@ build_ui() {
 
 build_api() {
   cd api/
-  rm -rf src/main/resources/static/*
   test -f src/main/resources/static || mkdir src/main/resources/static
+  rm -rf src/main/resources/static/*
   cp -R ../ui/build/* src/main/resources/static/
   mvn clean install
   cd ../

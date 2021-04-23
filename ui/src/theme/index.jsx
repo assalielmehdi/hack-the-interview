@@ -5,12 +5,12 @@ import typography from "./typography";
 const theme = createMuiTheme({
   palette: {
     background: {
-      default: "#F4F6F8",
+      default: "#F2F6FA",
       paper: colors.common.white,
     },
     primary: {
       contrastText: "#ffffff",
-      main: "#2b498a",
+      main: "#0056bf",
     },
     text: {
       primary: "#172b4d",
