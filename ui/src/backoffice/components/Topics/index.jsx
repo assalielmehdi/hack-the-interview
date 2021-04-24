@@ -70,7 +70,7 @@ const Topics = () => {
       }}
     >
       <Container maxWidth={false}>
-        <Grid container spacing={2} mb={3}>
+        <Grid container mb={3}>
           <Grid item xs={12} sm={6} display="flex" alignItems="flex-end" mb={1}>
             <SearchOutlinedIcon
               sx={{ color: "action.active", mr: 1, my: 0.5 }}

@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Container,
@@ -13,7 +13,9 @@ import {
 import { Context } from "../../../context";
 
 const NewTopicForm = () => {
-  const { addTopic } = useContext(Context);
+  const { _id, topicId = +_id } = useParams();
+
+  const { addLevel } = useContext(Context);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -22,12 +24,13 @@ const NewTopicForm = () => {
 
   const navigate = useNavigate();
 
-  const onTopicAdd = async () => {
+  const onLevelAdd = async () => {
     try {
       setLoading(true);
-      await addTopic({ name, description, levels: [] });
-      navigate("/backoffice/topics");
+      await addLevel(topicId, { name, description, questions: [] });
+      navigate(`/backoffice/topics/${topicId}`);
     } catch (e) {
+      console.log(e);
       setError(true);
       setLoading(false);
     }
@@ -70,7 +73,7 @@ const NewTopicForm = () => {
           />
         </FormControl>
         <Box mt={2} display="flex" justifyContent="flex-end">
-          <Button onClick={onTopicAdd}>Save</Button>
+          <Button onClick={onLevelAdd}>Save</Button>
         </Box>
       </Container>
     </Box>

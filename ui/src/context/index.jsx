@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, LinearProgress } from "@material-ui/core";
-import { getUsers, getTopics, getLevels } from "../helpers/ApiHelper";
+import { getUsers } from "../api/userApi";
+import { getTopics } from "../api/topicApi";
+import { getLevels } from "../api/levelApi";
+import { updateUser, deleteUser } from "./userContext";
+import { addTopic, updateTopic, deleteTopic } from "./topicContext";
+import { addLevel } from "./levelContext";
 
 export const Context = React.createContext({});
 
@@ -10,43 +15,8 @@ const ContextProvider = ({ children }) => {
 
   const [users, setUsers] = useState(null);
   const [topics, setTopics] = useState(null);
+  const [levels, setLevels] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState(["Backoffice"]);
-
-  const updateUser = (id, newUser) => {
-    console.log("updateUser");
-    const oldUser = users.find((user) => user.id === id);
-    setUsers([
-      ...users.filter((user) => user.id !== id),
-      {
-        id,
-        ...oldUser,
-        ...newUser,
-      },
-    ]);
-  };
-
-  const deleteUser = (id) => setUsers(users.filter((user) => user.id !== id));
-
-  const addTopic = (newTopic) =>
-    setTopics([
-      ...topics,
-      { id: Math.ceil(Math.random() * 1000000), ...newTopic },
-    ]);
-
-  const updateTopic = (id, newTopic) => {
-    const oldTopic = topics.find((topic) => topic.id === id);
-    setTopics([
-      ...topics.filter((topic) => topic.id !== id),
-      {
-        id,
-        ...oldTopic,
-        ...newTopic,
-      },
-    ]);
-  };
-
-  const deleteTopic = (id) =>
-    setTopics(topics.filter((topic) => topic.id !== id));
 
   useEffect(() => {
     const fetchContext = async () => {
@@ -54,16 +24,18 @@ const ContextProvider = ({ children }) => {
         const users = await getUsers();
         const topics = await getTopics();
         const levels = await getLevels();
+
         const levelsMap = levels.reduce((map, level) => {
           map[level.topicId] = [...(map[level.topicId] || []), level];
           return map;
         }, {});
+
         setUsers(users);
         setTopics(
           topics.map((topic) => ({ ...topic, levels: levelsMap[topic.id] }))
         );
+        setLevels(levels);
       } catch (err) {
-        console.log(err);
         setError(true);
       } finally {
         setLoading(false);
@@ -104,12 +76,13 @@ const ContextProvider = ({ children }) => {
         <Context.Provider
           value={{
             users,
-            updateUser,
-            deleteUser,
+            updateUser: updateUser(users, setUsers),
+            deleteUser: deleteUser(users, setUsers),
             topics,
-            addTopic,
-            updateTopic,
-            deleteTopic,
+            addTopic: addTopic(topics, setTopics),
+            updateTopic: updateTopic(topics, setTopics),
+            deleteTopic: deleteTopic(topics, setTopics),
+            addLevel: addLevel(topics, setTopics, levels, setLevels),
             breadcrumbs,
             setBreadcrumbs,
           }}
