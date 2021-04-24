@@ -7,8 +7,34 @@ import {
   InputLabel,
   Input,
   Button,
+  Typography,
+  Grid,
+  IconButton,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
 } from "@material-ui/core";
+import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import { Context } from "../../../context";
+
+const TopicLevel = ({ id, name }) => (
+  <Grid key={`topic-level-${id}`} item sx={{ mt: 1 }} xs={12} sm={6} md={4}>
+    <Paper elevation={2}>
+      <List dense={false}>
+        <ListItem>
+          <ListItemText primary={name} />
+          <ListItemSecondaryAction>
+            <IconButton edge="end">
+              <OpenInNewIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      </List>
+    </Paper>
+  </Grid>
+);
 
 const TopicForm = () => {
   const { _id, id = +_id } = useParams();
@@ -46,6 +72,14 @@ const TopicForm = () => {
             onChange={(e) => setDescription(e.target.value)}
           />
         </FormControl>
+        <Box my={2} sx={{ flexGrow: 1 }}>
+          <Typography variant="caption" color="text.secondary">
+            Levels
+          </Typography>
+          <Grid container spacing={1}>
+            {topic.levels.map(TopicLevel)}
+          </Grid>
+        </Box>
         <Box mt={2} display="flex" justifyContent="flex-end">
           <Button
             onClick={() => {

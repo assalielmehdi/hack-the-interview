@@ -18,8 +18,6 @@ const routes = [
       { path: "topics", element: <Topics /> },
       { path: "topics/add", element: <NewTopicForm /> },
       { path: "topics/:_id", element: <TopicForm /> },
-      { path: "levels", element: <NotFound /> },
-      { path: "questions", element: <NotFound /> },
       { path: "*", element: <NotFound /> },
     ],
   },

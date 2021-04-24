@@ -12,14 +12,6 @@ const items = [
     href: "/backoffice/topics",
     title: "Topics",
   },
-  {
-    href: "/backoffice/levels",
-    title: "Levels",
-  },
-  {
-    href: "/backoffice/questions",
-    title: "Questions",
-  },
 ];
 
 const BackofficeSidebar = ({

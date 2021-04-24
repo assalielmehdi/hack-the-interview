@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Typography, LinearProgress } from "@material-ui/core";
-import { getUsers, getTopics } from "../helpers/ApiHelper";
+import { getUsers, getTopics, getLevels } from "../helpers/ApiHelper";
 
 export const Context = React.createContext({});
 
@@ -52,11 +52,18 @@ const ContextProvider = ({ children }) => {
     const fetchContext = async () => {
       try {
         const users = await getUsers();
-        setUsers(users);
-
         const topics = await getTopics();
-        setTopics(topics);
+        const levels = await getLevels();
+        const levelsMap = levels.reduce((map, level) => {
+          map[level.topicId] = [...(map[level.topicId] || []), level];
+          return map;
+        }, {});
+        setUsers(users);
+        setTopics(
+          topics.map((topic) => ({ ...topic, levels: levelsMap[topic.id] }))
+        );
       } catch (err) {
+        console.log(err);
         setError(true);
       } finally {
         setLoading(false);
