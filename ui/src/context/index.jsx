@@ -3,9 +3,11 @@ import { Box, Button, Typography, LinearProgress } from "@material-ui/core";
 import { getUsers } from "../api/userApi";
 import { getTopics } from "../api/topicApi";
 import { getLevels } from "../api/levelApi";
+import { getQuestions } from "../api/questionApi";
 import { updateUser, deleteUser } from "./userContext";
 import { addTopic, updateTopic, deleteTopic } from "./topicContext";
-import { addLevel } from "./levelContext";
+import { addLevel, updateLevel, deleteLevel } from "./levelContext";
+import { addQuestion } from "./questionContext";
 
 export const Context = React.createContext({});
 
@@ -16,6 +18,7 @@ const ContextProvider = ({ children }) => {
   const [users, setUsers] = useState(null);
   const [topics, setTopics] = useState(null);
   const [levels, setLevels] = useState(null);
+  const [questions, setQuestions] = useState(null);
   const [breadcrumbs, setBreadcrumbs] = useState(["Backoffice"]);
 
   useEffect(() => {
@@ -23,7 +26,18 @@ const ContextProvider = ({ children }) => {
       try {
         const users = await getUsers();
         const topics = await getTopics();
-        const levels = await getLevels();
+        let levels = await getLevels();
+        const questions = await getQuestions();
+
+        const questionsMap = questions.reduce((map, question) => {
+          map[question.levelId] = [...(map[question.levelId] || []), question];
+          return map;
+        }, {});
+
+        levels = levels.map((level) => ({
+          ...level,
+          questions: questionsMap[level.id],
+        }));
 
         const levelsMap = levels.reduce((map, level) => {
           map[level.topicId] = [...(map[level.topicId] || []), level];
@@ -31,10 +45,11 @@ const ContextProvider = ({ children }) => {
         }, {});
 
         setUsers(users);
+        setQuestions(questions);
+        setLevels(levels);
         setTopics(
           topics.map((topic) => ({ ...topic, levels: levelsMap[topic.id] }))
         );
-        setLevels(levels);
       } catch (err) {
         setError(true);
       } finally {
@@ -83,6 +98,16 @@ const ContextProvider = ({ children }) => {
             updateTopic: updateTopic(topics, setTopics),
             deleteTopic: deleteTopic(topics, setTopics),
             addLevel: addLevel(topics, setTopics, levels, setLevels),
+            updateLevel: updateLevel(topics, setTopics, levels, setLevels),
+            deleteLevel: deleteLevel(topics, setTopics, levels, setLevels),
+            addQuestion: addQuestion(
+              topics,
+              setTopics,
+              levels,
+              setLevels,
+              questions,
+              setQuestions
+            ),
             breadcrumbs,
             setBreadcrumbs,
           }}

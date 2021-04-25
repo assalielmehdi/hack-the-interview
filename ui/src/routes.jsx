@@ -7,6 +7,8 @@ import Topics from "./backoffice/components/Topics";
 import TopicForm from "./backoffice/components/Topics/TopicForm";
 import NewTopicForm from "./backoffice/components/Topics/NewTopicForm";
 import NewLevelForm from "./backoffice/components/Levels/NewLevelForm";
+import LevelForm from "./backoffice/components/Levels/LevelForm";
+import NewQuestionForm from "./backoffice/components/Questions/NewQuestionForm";
 
 const routes = [
   {
@@ -18,7 +20,17 @@ const routes = [
       { path: "topics", element: <Topics /> },
       { path: "topics/add", element: <NewTopicForm /> },
       { path: "topics/:_id", element: <TopicForm /> },
-      { path: "topics/:_id/levels/add", element: <NewLevelForm /> },
+      { path: "topics/:_id/levels", element: <TopicForm /> },
+      { path: "topics/:_id/add", element: <NewLevelForm /> },
+      { path: "topics/:_topicId/levels/:_id", element: <LevelForm /> },
+      {
+        path: "topics/:_topicId/levels/:_id/questions",
+        element: <LevelForm />,
+      },
+      {
+        path: "topics/:_topicId/levels/:_levelId/add",
+        element: <NewQuestionForm />,
+      },
     ],
   },
   {

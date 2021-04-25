@@ -1,4 +1,12 @@
-import { Box, Card, Typography } from "@material-ui/core";
+import { Link as RouterLink } from "react-router-dom";
+import {
+  Box,
+  Card,
+  Typography,
+  CardContent,
+  CardActions,
+  Button,
+} from "@material-ui/core";
 
 const NotFound = () => (
   <Box
@@ -14,12 +22,25 @@ const NotFound = () => (
       sx={{
         minHeight: 180,
         minWidth: 360,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
       }}
     >
-      <Typography sx={{ fontSize: 60 }}>404</Typography>
+      <CardContent
+        sx={{
+          textAlign: "center",
+        }}
+      >
+        <Typography sx={{ fontSize: 60 }}>404</Typography>
+      </CardContent>
+      <CardActions
+        sx={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <RouterLink to="/">
+          <Button size="small">Home</Button>
+        </RouterLink>
+      </CardActions>
     </Card>
   </Box>
 );

@@ -13,13 +13,14 @@ export const updateUser = (users, setUsers) => async (
     ...users[idx],
     ...payload,
   };
+
   await updateUserApi(id, user);
+
   setUsers([...users.slice(0, idx), user, ...users.slice(idx + 1)]);
-  if (navigateTo) {
-  }
 };
 
 export const deleteUser = (users, setUsers) => async (id) => {
   await deleteUserApi(id);
+  
   setUsers(users.filter((user) => user.id !== id));
 };

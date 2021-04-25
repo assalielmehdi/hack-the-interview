@@ -12,24 +12,29 @@ import {
 } from "@material-ui/core";
 import { Context } from "../../../context";
 
-const NewTopicForm = () => {
-  const { _id, topicId = +_id } = useParams();
+const NewQuestionForm = () => {
+  const {
+    _topicId,
+    _levelId,
+    topicId = +_topicId,
+    levelId = +_levelId,
+  } = useParams();
 
-  const { addLevel } = useContext(Context);
+  const { addQuestion } = useContext(Context);
 
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
 
   const navigate = useNavigate();
 
-  const onLevelAdd = async () => {
+  const onQuestionAdd = async () => {
     try {
       setLoading(true);
-      await addLevel(topicId, { name, topicId, description, questions: [] });
-      navigate(`/backoffice/topics/${topicId}`);
+      await addQuestion(topicId, levelId, { name, levelId });
+      navigate(`/backoffice/topics/${topicId}/levels/${levelId}`);
     } catch (e) {
+      console.log(e);
       setError(true);
       setLoading(false);
     }
@@ -63,20 +68,12 @@ const NewTopicForm = () => {
             onChange={(e) => setName(e.target.value)}
           />
         </FormControl>
-        <FormControl fullWidth sx={{ my: 2 }} variant="standard">
-          <InputLabel htmlFor="description">Description</InputLabel>
-          <Input
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </FormControl>
         <Box mt={2} display="flex" justifyContent="flex-end">
-          <Button onClick={onLevelAdd}>Save</Button>
+          <Button onClick={onQuestionAdd}>Save</Button>
         </Box>
       </Container>
     </Box>
   );
 };
 
-export default NewTopicForm;
+export default NewQuestionForm;
