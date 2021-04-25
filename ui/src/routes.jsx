@@ -1,4 +1,5 @@
 import { Navigate } from "react-router";
+import NotFound from "./NotFound";
 import DashboardLayout from "./backoffice";
 import Users from "./backoffice/components/Users";
 import UserForm from "./backoffice/components/Users/UserForm";
@@ -6,8 +7,6 @@ import Topics from "./backoffice/components/Topics";
 import TopicForm from "./backoffice/components/Topics/TopicForm";
 import NewTopicForm from "./backoffice/components/Topics/NewTopicForm";
 import NewLevelForm from "./backoffice/components/Levels/NewLevelForm";
-
-const NotFound = () => <div>Not Found</div>;
 
 const routes = [
   {
@@ -20,12 +19,19 @@ const routes = [
       { path: "topics/add", element: <NewTopicForm /> },
       { path: "topics/:_id", element: <TopicForm /> },
       { path: "topics/:_id/levels/add", element: <NewLevelForm /> },
-      { path: "*", element: <NotFound /> },
     ],
   },
   {
     path: "/",
     element: <Navigate to="backoffice" />,
+  },
+  {
+    path: "/error",
+    element: <NotFound />,
+  },
+  {
+    path: "*",
+    element: <Navigate to="/error" />,
   },
 ];
 
