@@ -9,6 +9,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 public class SwaggerUIConfig {
+
   @Bean
   public Docket docket() {
     return new Docket(DocumentationType.SWAGGER_2)
@@ -17,4 +18,5 @@ public class SwaggerUIConfig {
       .paths(PathSelectors.any())
       .build();
   }
+
 }
