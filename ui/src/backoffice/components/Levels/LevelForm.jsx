@@ -17,16 +17,24 @@ import {
   ListItemSecondaryAction,
   Alert,
   LinearProgress,
+  Rating,
 } from "@material-ui/core";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import { Context } from "../../../context";
 
-const LevelQuestion = ({ id, name }) => (
+const LevelQuestion = ({ id, name, difficulty }) => (
   <Grid key={`level-question-${id}`} item sx={{ mt: 1 }} xs={12} sm={6} md={4}>
     <Paper elevation={2}>
       <List dense={false}>
         <ListItem>
-          <ListItemText primary={name} />
+          <ListItemText>{name}</ListItemText>
+
+          <Rating
+            name="half-rating-read"
+            defaultValue={difficulty / 2}
+            precision={0.5}
+            readOnly
+          />
           <ListItemSecondaryAction>
             <IconButton edge="end">
               <OpenInNewIcon />
