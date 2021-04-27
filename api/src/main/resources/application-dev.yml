@@ -7,12 +7,21 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
+            client-id: 295110977444-tkc3l6lqfhkfuovk1bmqlrhnoa02ap88.apps.googleusercontent.com
+            client-secret: bTWSC6KJdNZufUg-479r_ZpQ
   datasource:
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:hack_the_interview
     username: root
     password:
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+spa:
+  patterns:
+    - /
+    - /404/

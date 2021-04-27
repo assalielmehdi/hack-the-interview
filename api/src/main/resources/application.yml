@@ -19,3 +19,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect # The SQL dialect makes Hibernate generate better SQL for the chosen database
+
+spa:
+  patterns:
+    - /
+    - /404/
