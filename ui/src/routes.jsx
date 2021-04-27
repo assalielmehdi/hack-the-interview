@@ -9,6 +9,8 @@ import NewTopicForm from "./backoffice/components/Topics/NewTopicForm";
 import NewLevelForm from "./backoffice/components/Levels/NewLevelForm";
 import LevelForm from "./backoffice/components/Levels/LevelForm";
 import NewQuestionForm from "./backoffice/components/Questions/NewQuestionForm";
+import LoginForm from "./LoginForm";
+import Home from "./Home";
 
 const routes = [
   {
@@ -35,7 +37,11 @@ const routes = [
   },
   {
     path: "/",
-    element: <Navigate to="backoffice" />,
+    element: <Home to="backoffice" />,
+  },
+  {
+    path: "/login",
+    element: <LoginForm />,
   },
   {
     path: "/error",
