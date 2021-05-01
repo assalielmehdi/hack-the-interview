@@ -11,24 +11,25 @@ import java.util.List;
 @Entity
 @Data
 public class Level {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    @NotNull
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    @NotNull
-    private String description;
+  @NotNull
+  private String name;
 
-    @OneToMany(mappedBy = "level")
-    private List<Question> questions = new ArrayList<>();
+  @NotNull
+  private String description;
 
-    @OneToMany(mappedBy = "level")
-    private List<UserTopicLevel> userTopicLevel = new ArrayList<>();
+  @OneToMany(mappedBy = "level")
+  private List<Question> questions = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "topicId", nullable = false)
-    private Topic topic;
+  @OneToMany(mappedBy = "level")
+  private List<UserTopicLevel> userTopicLevel = new ArrayList<>();
+
+  @ManyToOne
+  @JoinColumn(name = "topicId", nullable = false)
+  private Topic topic;
 
 }

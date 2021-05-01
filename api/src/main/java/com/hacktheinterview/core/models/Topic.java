@@ -11,19 +11,22 @@ import java.util.List;
 @Entity
 @Data
 public class Topic {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    @NotNull
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    @NotNull
-    private String description;
+  @NotNull
+  @Column(unique = true)
+  private String name;
 
-    @OneToMany(mappedBy = "topic")
-    private List<Level> levels = new ArrayList<>();
+  @NotNull
+  private String description;
 
-    @OneToMany(mappedBy = "topic")
-    private List<UserTopicLevel> userTopicLevel = new ArrayList<>();
+  @OneToMany(mappedBy = "topic")
+  private List<Level> levels = new ArrayList<>();
+
+  @OneToMany(mappedBy = "topic")
+  private List<UserTopicLevel> userTopicLevel = new ArrayList<>();
+
 }

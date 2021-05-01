@@ -8,18 +8,19 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Data
 public class Choice {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
-	
-	@NotNull
-	private String content;
-	
-	@NotNull
-	private boolean correct;
-	
-	@ManyToOne
-	@JoinColumn(name = "questionId", nullable = false)
-	private Question question;
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
+
+  @NotNull
+  private String content;
+
+  @NotNull
+  private boolean correct;
+
+  @ManyToOne
+  @JoinColumn(name = "questionId", nullable = false)
+  private Question question;
+
 }
