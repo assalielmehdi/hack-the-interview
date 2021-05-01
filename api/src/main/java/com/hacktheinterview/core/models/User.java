@@ -30,4 +30,7 @@ public class User {
 			inverseJoinColumns = { @JoinColumn(name = "questionId") }
 	)
 	private List<Question> questions = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user")
+	private List<UserTopicLevel> userTopicLevel = new ArrayList<>();
 }

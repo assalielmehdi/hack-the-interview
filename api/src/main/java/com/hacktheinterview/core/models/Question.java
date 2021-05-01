@@ -29,7 +29,14 @@ public class Question {
 	
 	@OneToMany(mappedBy = "question")
 	private List<Choice> choices = new ArrayList<>();
+
+	@OneToMany(mappedBy = "question")
+	private List<Tag> tags = new ArrayList<>();
 	
 	@ManyToMany(mappedBy = "questions")
 	private List<User> users = new ArrayList<>();
+
+	@ManyToOne
+	@JoinColumn(name = "levelId", nullable = false)
+	private Level level;
 }
