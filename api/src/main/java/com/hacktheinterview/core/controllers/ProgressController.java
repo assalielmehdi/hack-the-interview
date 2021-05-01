@@ -1,6 +1,6 @@
 package com.hacktheinterview.core.controllers;
 
-import com.hacktheinterview.core.dto.ProgressDto;
+import com.hacktheinterview.core.dto.Progress;
 import com.hacktheinterview.core.services.ProgressService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ public class ProgressController {
 
   @GetMapping("progress/{email}")
   @ResponseStatus(HttpStatus.OK)
-  public ProgressDto getProgress(@PathVariable String email) {
+  public Progress getProgress(@PathVariable String email) {
     return progressService.getProgress(email);
   }
 

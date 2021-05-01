@@ -43,7 +43,7 @@ public class Question {
   private List<User> users = new ArrayList<>();
 
   @ManyToOne
-  @JoinColumn(name = "levelId", nullable = false)
+  @JoinColumn(name = "levelId")
   private Level level;
 
 }

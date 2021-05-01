@@ -1,6 +1,6 @@
 package com.hacktheinterview.core.services;
 
-import com.hacktheinterview.core.dto.*;
+import com.hacktheinterview.core.dto.Progress;
 import com.hacktheinterview.core.exceptions.NotFoundException;
 import com.hacktheinterview.core.models.*;
 import com.hacktheinterview.core.repositories.*;
@@ -20,7 +20,7 @@ public class ProgressServiceImpl implements ProgressService {
 
   private final TopicRepository topicRepository;
 
-  private final UserTopicLevelRepository userTopicLevelRepository;
+  private final LevelRepository levelRepository;
 
   private final QuestionRepository questionRepository;
 
@@ -28,8 +28,10 @@ public class ProgressServiceImpl implements ProgressService {
 
   private final TagRepository tagRepository;
 
+  private final UserTopicLevelRepository userTopicLevelRepository;
+
   @Override
-  public ProgressDto getProgress(String email) {
+  public Progress getProgress(String email) {
     User user = userRepository.findByEmail(email)
       .orElseThrow(() -> {
         String notFoundMessage = String.format("User with email %s not found", email);
@@ -37,67 +39,45 @@ public class ProgressServiceImpl implements ProgressService {
         return new NotFoundException(notFoundMessage);
       });
 
-    List<TopicDto> topics = topicRepository.findAll()
-      .stream()
-      .map(topic -> fillTopic(user, topic))
-      .collect(Collectors.toList());
+    List<Topic> topics = topicRepository.findAll();
 
-    return ProgressDto.builder().topics(topics).build();
+    topics.forEach(topic -> fillTopic(user, topic));
+
+    return Progress.builder().topics(topics).build();
   }
 
-  private TopicDto fillTopic(User user, Topic topic) {
-    List<LevelDto> levels = userTopicLevelRepository
+  private void fillTopic(User user, Topic topic) {
+    List<Level> levels = levelRepository.findAllByTopic(topic);
+
+    List<Level> unlockedLevels = userTopicLevelRepository
       .findAllByUserAndTopic(user, topic)
       .stream()
       .map(UserTopicLevel::getLevel)
-      .map(level -> fillLevel(user, level))
       .collect(Collectors.toList());
 
-    return TopicDto.builder()
-      .name(topic.getName())
-      .description(topic.getDescription())
-      .levels(levels)
-      .build();
+    levels.stream()
+      .filter(unlockedLevels::contains)
+      .forEach(level -> fillLevel(user, level));
+
+    topic.setLevels(levels);
   }
 
-  private LevelDto fillLevel(User user, Level level) {
-    List<QuestionDto> questions = questionRepository
-      .findAllByUsersContainsAndLevel(user, level)
-      .stream()
-      .map(this::fillQuestion)
-      .collect(Collectors.toList());
+  private void fillLevel(User user, Level level) {
+    List<Question> questions = questionRepository.findAllByUsersContainsAndLevel(user, level);
 
-    return LevelDto.builder()
-      .name(level.getName())
-      .description(level.getDescription())
-      .questions(questions)
-      .build();
+    questions.forEach(this::fillQuestion);
+
+    level.setQuestions(questions);
   }
 
-  private QuestionDto fillQuestion(Question question) {
-    List<ChoiceDto> choices = choiceRepository
-      .findAllByQuestion(question)
-      .stream()
-      .map(choice -> ChoiceDto.builder()
-        .id(choice.getId())
-        .content(choice.getContent())
-        .build()
-      )
-      .collect(Collectors.toList());
+  private void fillQuestion(Question question) {
+    List<Choice> choices = choiceRepository.findAllByQuestion(question);
+    List<Tag> tags = tagRepository.findAllByQuestionsContains(question);
 
-    List<String> tags = tagRepository
-      .findAllByQuestionsContains(question)
-      .stream()
-      .map(Tag::getName)
-      .collect(Collectors.toList());
+    choices.forEach(choice -> choice.setCorrect(false));
 
-    return QuestionDto.builder()
-      .name(question.getName())
-      .content(question.getContent())
-      .difficulty(question.getDifficulty())
-      .choices(choices)
-      .tags(tags)
-      .build();
+    question.setChoices(choices);
+    question.setTags(tags);
   }
 
 }

@@ -1,9 +1,9 @@
 package com.hacktheinterview.core.services;
 
-import com.hacktheinterview.core.dto.ProgressDto;
+import com.hacktheinterview.core.dto.Progress;
 
 public interface ProgressService {
 
-  ProgressDto getProgress(String email);
+  Progress getProgress(String email);
 
 }

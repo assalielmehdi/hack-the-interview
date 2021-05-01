@@ -20,7 +20,7 @@ public class Choice {
   private boolean correct;
 
   @ManyToOne
-  @JoinColumn(name = "questionId", nullable = false)
+  @JoinColumn(name = "questionId")
   private Question question;
 
 }

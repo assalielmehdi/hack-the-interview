@@ -22,6 +22,9 @@ public class Level {
   @NotNull
   private String description;
 
+  @NotNull
+  private int priority;
+
   @OneToMany(mappedBy = "level")
   private List<Question> questions = new ArrayList<>();
 
@@ -29,7 +32,7 @@ public class Level {
   private List<UserTopicLevel> userTopicLevel = new ArrayList<>();
 
   @ManyToOne
-  @JoinColumn(name = "topicId", nullable = false)
+  @JoinColumn(name = "topicId")
   private Topic topic;
 
 }

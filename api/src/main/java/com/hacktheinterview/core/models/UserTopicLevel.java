@@ -15,15 +15,15 @@ public class UserTopicLevel {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "userId", nullable = false)
+  @JoinColumn(name = "userId")
   private User user;
 
   @ManyToOne
-  @JoinColumn(name = "topicId", nullable = false)
+  @JoinColumn(name = "topicId")
   private Topic topic;
 
   @ManyToOne
-  @JoinColumn(name = "levelId", nullable = false)
+  @JoinColumn(name = "levelId")
   private Level level;
 
 }
