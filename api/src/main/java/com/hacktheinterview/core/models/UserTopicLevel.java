@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="user_topic_level")
 public class UserTopicLevel {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
