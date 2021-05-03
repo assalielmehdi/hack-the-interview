@@ -3,7 +3,18 @@ import { baseUrl } from "./serverConfig";
 export const getUsers = async () => {
   const response = await fetch(`${baseUrl}/users`);
   if (!response.ok) {
-    throw Error(`Cannot fetch users: ${response.text()}`);
+    throw Error();
+  }
+  const {
+    _embedded: { users },
+  } = await response.json();
+  return users;
+};
+
+export const getUser = async (id) => {
+  const response = await fetch(`${baseUrl}/users/${id}`);
+  if (!response.ok) {
+    throw Error();
   }
   return response.json();
 };
@@ -17,9 +28,8 @@ export const updateUser = async (id, payload) => {
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
-    throw Error(`Cannot update user: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
 };
 
 export const deleteUser = async (id) => {
@@ -27,7 +37,6 @@ export const deleteUser = async (id) => {
     method: "DELETE",
   });
   if (!response.ok) {
-    throw Error(`Cannot delete user: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
 };

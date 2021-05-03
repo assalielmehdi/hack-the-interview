@@ -1,14 +1,9 @@
 server:
   port: ${SERVER_PORT:9999}
+  servlet:
+    contextPath: /api
 
 spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 295110977444-tkc3l6lqfhkfuovk1bmqlrhnoa02ap88.apps.googleusercontent.com
-            client-secret: bTWSC6KJdNZufUg-479r_ZpQ
   datasource:
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:hack_the_interview
@@ -21,7 +16,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
 
-spa:
-  patterns:
-    - /
-    - /404/
+cors:
+  origins:
+    - http://localhost:3000

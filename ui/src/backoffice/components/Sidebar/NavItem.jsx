@@ -39,6 +39,7 @@ const NavItem = ({ href, title, ...rest }) => {
           width: "100%",
           ...(active && {
             color: "primary.main",
+            backgroundColor: "rgba(156, 212, 247, 0.1)",
           }),
           "& svg": {
             mr: 1,

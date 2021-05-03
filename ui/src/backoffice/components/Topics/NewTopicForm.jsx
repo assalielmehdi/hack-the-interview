@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -10,13 +10,12 @@ import {
   LinearProgress,
   Alert,
 } from "@material-ui/core";
-import { Context } from "../../../context";
+import { addTopic } from "../../../api/topicApi";
 
 const NewTopicForm = () => {
-  const { addTopic } = useContext(Context);
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
 
@@ -25,7 +24,7 @@ const NewTopicForm = () => {
   const onTopicAdd = async () => {
     try {
       setLoading(true);
-      await addTopic({ name, description, levels: [] });
+      await addTopic({ name, description });
       navigate("/backoffice/topics");
     } catch (e) {
       setError(true);

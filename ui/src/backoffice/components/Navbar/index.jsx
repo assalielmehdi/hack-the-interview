@@ -21,12 +21,27 @@ const BackofficeNavbar = ({ onMobileNavOpen, ...rest }) => {
   }));
 
   return (
-    <AppBar elevation={0} {...rest}>
-      <Toolbar>
-        <Breadcrumbs color="primary.contrastText">
+    <AppBar elevation={1} {...rest}>
+      <Toolbar
+        sx={{
+          backgroundColor: "background.paper",
+          color: "text.primary",
+        }}
+      >
+        <Breadcrumbs
+          sx={{
+            color: "text.primary",
+          }}
+        >
           {breadcrumbs.map(({ label, href }, idx) => (
             <RouterLink key={`breadcrumbs-${idx}`} to={href}>
-              <Typography color="primary.contrastText">{label}</Typography>
+              <Typography
+                sx={{
+                  color: "text.primary",
+                }}
+              >
+                {label}
+              </Typography>
             </RouterLink>
           ))}
         </Breadcrumbs>

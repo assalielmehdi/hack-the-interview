@@ -1,7 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Drawer, Hidden, List } from "@material-ui/core";
+import {
+  Box,
+  Drawer,
+  Hidden,
+  List,
+  Typography,
+  Grid,
+  Switch,
+} from "@material-ui/core";
+import Brightness5Icon from "@material-ui/icons/Brightness5";
+import Brightness2Icon from "@material-ui/icons/Brightness2";
 import NavItem from "./NavItem";
+import { ThemeContext } from "../../../App";
 
 const items = [
   {
@@ -12,6 +23,10 @@ const items = [
     href: "/backoffice/topics",
     title: "Topics",
   },
+  {
+    href: "/backoffice/tags",
+    title: "Tags",
+  },
 ];
 
 const BackofficeSidebar = ({
@@ -20,12 +35,49 @@ const BackofficeSidebar = ({
 }) => {
   const location = useLocation();
 
+  const { toggleTheme } = useContext(ThemeContext);
+
+  const [toggleChecked, setToggleChecked] = useState(false);
+
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
     // eslint-disable-next-line
   }, [location.pathname]);
+
+  const Toggle = () => {
+    return (
+      <Typography component="div">
+        <Grid
+          component="label"
+          justifyContent="center"
+          container
+          alignItems="center"
+          spacing={1}
+          pb={3}
+        >
+          <Grid item sx={{ display: "flex", pl: 0 }}>
+            <Brightness5Icon fontSize="small" />
+          </Grid>
+          <Grid item>
+            <Switch
+              size="small"
+              checked={toggleChecked}
+              color="default"
+              onChange={() => {
+                toggleTheme();
+                setToggleChecked(!toggleChecked);
+              }}
+            />
+          </Grid>
+          <Grid item sx={{ display: "flex" }}>
+            <Brightness2Icon fontSize="small" />
+          </Grid>
+        </Grid>
+      </Typography>
+    );
+  };
 
   const content = (
     <Box
@@ -43,6 +95,7 @@ const BackofficeSidebar = ({
         </List>
       </Box>
       <Box sx={{ flexGrow: 1 }} />
+      <Toggle />
     </Box>
   );
 

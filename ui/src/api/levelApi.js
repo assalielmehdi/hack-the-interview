@@ -1,15 +1,26 @@
 import { baseUrl } from "./serverConfig";
 
-export const getLevels = async () => {
-  const response = await fetch(`${baseUrl}/levels`);
+export const getTopicLevels = async (topicId) => {
+  const response = await fetch(`${baseUrl}/topics/${topicId}/levels`);
   if (!response.ok) {
-    throw Error("Cannot fetch levels");
+    throw Error();
+  }
+  const {
+    _embedded: { levels },
+  } = await response.json();
+  return levels;
+};
+
+export const getLevel = async (id) => {
+  const response = await fetch(`${baseUrl}/levels/${id}`);
+  if (!response.ok) {
+    throw Error();
   }
   return response.json();
 };
 
-export const addLevel = async (payload) => {
-  const response = await fetch(`${baseUrl}/levels`, {
+export const addTopicLevel = async (topicId, payload) => {
+  let response = await fetch(`${baseUrl}/levels`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,9 +28,19 @@ export const addLevel = async (payload) => {
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
-    throw Error(`Cannot add level: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
+  const { id } = await response.json();
+  response = await fetch(`${baseUrl}/levels/${id}/topic`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "text/uri-list",
+    },
+    body: `${baseUrl}/topics/${topicId}`,
+  });
+  if (!response.ok) {
+    throw Error();
+  }
 };
 
 export const updateLevel = async (id, payload) => {
@@ -31,9 +52,8 @@ export const updateLevel = async (id, payload) => {
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
-    throw Error(`Cannot update level: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
 };
 
 export const deleteLevel = async (id) => {
@@ -41,7 +61,6 @@ export const deleteLevel = async (id) => {
     method: "DELETE",
   });
   if (!response.ok) {
-    throw Error(`Cannot delete level: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
 };

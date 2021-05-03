@@ -2,7 +2,7 @@ import { createMuiTheme, colors } from "@material-ui/core";
 import shadows from "./shadows";
 import typography from "./typography";
 
-const theme = createMuiTheme({
+export const lightTheme = createMuiTheme({
   palette: {
     background: {
       default: "#F2F6FA",
@@ -21,4 +21,21 @@ const theme = createMuiTheme({
   typography,
 });
 
-export default theme;
+export const darkTheme = createMuiTheme({
+  palette: {
+    background: {
+      default: "#031f30",
+      paper: "#0e161b",
+    },
+    primary: {
+      contrastText: "#031f30",
+      main: "#ffffff",
+    },
+    text: {
+      primary: "#ffffff",
+      secondary: "#9cd4f7",
+    },
+  },
+  shadows,
+  typography,
+});

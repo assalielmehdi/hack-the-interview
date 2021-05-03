@@ -1,15 +1,26 @@
 import { baseUrl } from "./serverConfig";
 
-export const getQuestions = async () => {
-  const response = await fetch(`${baseUrl}/questions`);
+export const getLevelQuestions = async (levelId) => {
+  const response = await fetch(`${baseUrl}/levels/${levelId}/questions`);
   if (!response.ok) {
-    throw Error("Cannot fetch questions");
+    throw Error();
+  }
+  const {
+    _embedded: { questions },
+  } = await response.json();
+  return questions;
+};
+
+export const getQuestion = async (id) => {
+  const response = await fetch(`${baseUrl}/questions/${id}`);
+  if (!response.ok) {
+    throw Error();
   }
   return response.json();
 };
 
-export const addQuestion = async (payload) => {
-  const response = await fetch(`${baseUrl}/questions`, {
+export const addLevelQuestion = async (levelId, payload) => {
+  let response = await fetch(`${baseUrl}/questions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,9 +28,19 @@ export const addQuestion = async (payload) => {
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
-    throw Error(`Cannot add question: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
+  const { id } = await response.json();
+  response = await fetch(`${baseUrl}/questions/${id}/level`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "text/uri-list",
+    },
+    body: `${baseUrl}/levels/${levelId}`,
+  });
+  if (!response.ok) {
+    throw Error();
+  }
 };
 
 export const updateQuestion = async (id, payload) => {

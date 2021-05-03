@@ -3,7 +3,18 @@ import { baseUrl } from "./serverConfig";
 export const getTopics = async () => {
   const response = await fetch(`${baseUrl}/topics`);
   if (!response.ok) {
-    throw Error("Cannot fetch topics");
+    throw Error();
+  }
+  const {
+    _embedded: { topics },
+  } = await response.json();
+  return topics;
+};
+
+export const getTopic = async (id) => {
+  const response = await fetch(`${baseUrl}/topics/${id}`);
+  if (!response.ok) {
+    throw Error();
   }
   return response.json();
 };
@@ -17,9 +28,8 @@ export const addTopic = async (payload) => {
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
-    throw Error(`Cannot add topic: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
 };
 
 export const updateTopic = async (id, payload) => {
@@ -31,9 +41,8 @@ export const updateTopic = async (id, payload) => {
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
-    throw Error(`Cannot update topic: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
 };
 
 export const deleteTopic = async (id) => {
@@ -41,7 +50,6 @@ export const deleteTopic = async (id) => {
     method: "DELETE",
   });
   if (!response.ok) {
-    throw Error(`Cannot delete topic: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
 };

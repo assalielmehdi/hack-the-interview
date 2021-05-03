@@ -1,14 +1,9 @@
 server:
   port: ${SERVER_PORT:9999}
+  servlet:
+    contextPath: /api
 
 spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:hacktheinterview}
     username: ${DB_USER:root}
@@ -21,7 +16,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect # The SQL dialect makes Hibernate generate better SQL for the chosen database
 
-spa:
-  patterns:
-    - /
-    - /404/
+cors:
+  origins:
+    - http://localhost:3000

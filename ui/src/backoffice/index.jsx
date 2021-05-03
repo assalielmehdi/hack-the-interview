@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Helmet from "react-helmet";
 import { Outlet } from "react-router-dom";
 import { experimentalStyled } from "@material-ui/core";
-import ContextProvider from "../context";
 import BackofficeNavbar from "./components/Navbar";
 import BackofficeSidebar from "./components/Sidebar";
 
@@ -44,22 +43,20 @@ const Backoffice = () => {
       <Helmet>
         <title>Backoffice | Hack The Interview</title>
       </Helmet>
-      <ContextProvider>
-        <BackofficeLayoutRoot>
-          <BackofficeNavbar onMobileNavOpen={() => setMobileNavOpen(true)} />
-          <BackofficeSidebar
-            onMobileClose={() => setMobileNavOpen(false)}
-            openMobile={isMobileNavOpen}
-          />
-          <BackofficeLayoutWrapper>
-            <BackofficeLayoutContainer>
-              <BackofficeLayoutContent>
-                <Outlet />
-              </BackofficeLayoutContent>
-            </BackofficeLayoutContainer>
-          </BackofficeLayoutWrapper>
-        </BackofficeLayoutRoot>
-      </ContextProvider>
+      <BackofficeLayoutRoot>
+        <BackofficeNavbar onMobileNavOpen={() => setMobileNavOpen(true)} />
+        <BackofficeSidebar
+          onMobileClose={() => setMobileNavOpen(false)}
+          openMobile={isMobileNavOpen}
+        />
+        <BackofficeLayoutWrapper>
+          <BackofficeLayoutContainer>
+            <BackofficeLayoutContent>
+              <Outlet />
+            </BackofficeLayoutContent>
+          </BackofficeLayoutContainer>
+        </BackofficeLayoutWrapper>
+      </BackofficeLayoutRoot>
     </>
   );
 };
