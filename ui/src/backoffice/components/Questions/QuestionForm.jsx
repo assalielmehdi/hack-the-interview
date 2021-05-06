@@ -1,36 +1,36 @@
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 import {
+  Alert,
   Box,
+  Button,
+  Chip,
   Container,
   FormControl,
-  InputLabel,
-  Input,
-  Button,
-  LinearProgress,
-  Alert,
-  Slider,
-  Typography,
   Grid,
-  TextField,
-  Tabs,
-  Tab,
-  Select,
+  Input,
+  InputLabel,
+  LinearProgress,
   MenuItem,
-  Chip,
+  Select,
+  Slider,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
 } from "@material-ui/core";
-import {addLevelQuestion} from "../../../api/questionApi";
-import {addQuestionTags} from "../../../api/tagApi.js";
+import {deleteQuestion, getQuestion} from "../../../api/questionApi";
+import {getQuestionTags} from "../../../api/tagApi.js";
 import {getTags} from "../../../api/tagApi";
 import DataLoader from "../DataLoader";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 
-const NewQuestionForm = () => {
-  const {topicId, levelId} = useParams();
+const QuestionForm = () => {
+  const {topicId, levelId, questionId} = useParams();
 
   const [tags, setTags] = useState([]);
   const [name, setName] = useState("");
@@ -48,31 +48,32 @@ const NewQuestionForm = () => {
 
   const navigate = useNavigate();
 
-  const onQuestionAdd = async () => {
+  const onQuestionUpdate = async () => {
+  };
+
+  const onQuestionDelete = async () => {
     try {
       setLoading(true);
-      const {id} = await addLevelQuestion(levelId, {
-        name,
-        difficulty,
-        content,
-        correctAnswer,
-      });
-      await addQuestionTags(
-        id,
-        tags.filter(({name}) => selectedTags.includes(name))
-      );
-      navigate(`/backoffice/topics/${topicId}/levels/${levelId}`);
+      await deleteQuestion(questionId);
+      navigate(`/backoffice/topics/${topicId}`);
     } catch (e) {
-      setError(true);
       setLoading(false);
+      setError(true);
     }
   };
 
   useEffect(() => {
-    const fetchTags = async () => {
+    const fetchQuestion = async () => {
       try {
+        const {name, difficulty, content, correctAnswer} = await getQuestion(questionId);
         const tags = await getTags();
+        const selectedTags = await getQuestionTags(questionId);
+        setName(name);
+        setDifficulty(difficulty);
+        setContent(content);
+        setCorrectAnswer(correctAnswer);
         setTags(tags);
+        setSelectedTags(selectedTags.map(({name}) => name));
       } catch (e) {
         setFetchError(true);
       } finally {
@@ -80,7 +81,7 @@ const NewQuestionForm = () => {
       }
     };
 
-    fetchTags();
+    fetchQuestion();
   }, [isFetchLoading]);
 
   return (
@@ -274,7 +275,14 @@ const NewQuestionForm = () => {
             </Grid>
           </Box>
           <Box mt={2} display="flex" justifyContent="flex-end">
-            <Button onClick={onQuestionAdd}>Save</Button>
+            <Button onClick={onQuestionUpdate}>Update</Button>
+            <Button
+              sx={{ml: 2}}
+              color="secondary"
+              onClick={onQuestionDelete}
+            >
+              Delete
+            </Button>
           </Box>
         </Container>
       </Box>
@@ -282,4 +290,4 @@ const NewQuestionForm = () => {
   );
 };
 
-export default NewQuestionForm;
+export default QuestionForm;

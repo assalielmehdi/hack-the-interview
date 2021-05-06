@@ -1,4 +1,4 @@
-import { baseUrl } from "./serverConfig";
+import {baseUrl} from "./serverConfig";
 
 export const getLevelQuestions = async (levelId) => {
   const response = await fetch(`${baseUrl}/levels/${levelId}/questions`);
@@ -6,7 +6,7 @@ export const getLevelQuestions = async (levelId) => {
     throw Error();
   }
   const {
-    _embedded: { questions },
+    _embedded: {questions},
   } = await response.json();
   return questions;
 };
@@ -30,8 +30,8 @@ export const addLevelQuestion = async (levelId, payload) => {
   if (!response.ok) {
     throw Error();
   }
-  const { id } = await response.json();
-  response = await fetch(`${baseUrl}/questions/${id}/level`, {
+  const question = await response.json();
+  response = await fetch(`${baseUrl}/questions/${question.id}/level`, {
     method: "PUT",
     headers: {
       "Content-Type": "text/uri-list",
@@ -41,6 +41,7 @@ export const addLevelQuestion = async (levelId, payload) => {
   if (!response.ok) {
     throw Error();
   }
+  return question;
 };
 
 export const updateQuestion = async (id, payload) => {
@@ -62,7 +63,6 @@ export const deleteQuestion = async (id) => {
     method: "DELETE",
   });
   if (!response.ok) {
-    throw Error(`Cannot delete question: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
 };

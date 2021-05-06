@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {
   Box,
   Container,
@@ -10,7 +10,7 @@ import {
   LinearProgress,
   Alert,
 } from "@material-ui/core";
-import { addTopic } from "../../../api/topicApi";
+import {addTopic} from "../../../api/topicApi";
 
 const NewTopicForm = () => {
   const [name, setName] = useState("");
@@ -24,7 +24,7 @@ const NewTopicForm = () => {
   const onTopicAdd = async () => {
     try {
       setLoading(true);
-      await addTopic({ name, description });
+      await addTopic({name, description});
       navigate("/backoffice/topics");
     } catch (e) {
       setError(true);
@@ -40,19 +40,19 @@ const NewTopicForm = () => {
       }}
     >
       {isLoading && (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
+        <Box sx={{width: "100%"}}>
+          <LinearProgress/>
         </Box>
       )}
       {isError && (
-        <Box sx={{ width: "100%", p: 2 }}>
+        <Box sx={{width: "100%", p: 2}}>
           <Alert severity="error" onClose={() => setError(false)}>
             An error occurred when trying to update or delete the resource!
           </Alert>
         </Box>
       )}
-      <Container maxWidth={false} sx={{ py: 3 }}>
-        <FormControl fullWidth sx={{ my: 2 }} variant="standard">
+      <Container maxWidth={false} sx={{py: 3}}>
+        <FormControl fullWidth sx={{my: 2}} variant="standard">
           <InputLabel htmlFor="name">Name</InputLabel>
           <Input
             id="name"
@@ -60,7 +60,7 @@ const NewTopicForm = () => {
             onChange={(e) => setName(e.target.value)}
           />
         </FormControl>
-        <FormControl fullWidth sx={{ my: 2 }} variant="standard">
+        <FormControl fullWidth sx={{my: 2}} variant="standard">
           <InputLabel htmlFor="description">Description</InputLabel>
           <Input
             id="description"

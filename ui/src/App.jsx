@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { useRoutes } from "react-router-dom";
-import { ThemeProvider } from "@material-ui/core";
+import React, {useState} from "react";
+import {useRoutes} from "react-router-dom";
+import {ThemeProvider} from "@material-ui/core";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import GlobalStyles from "./theme/GlobalStyles";
-import { lightTheme, darkTheme } from "./theme";
+import {lightTheme, darkTheme} from "./theme";
 import routes from "./routes";
 
 export const ThemeContext = React.createContext({});
@@ -18,9 +18,9 @@ const App = () => {
   };
 
   return (
-    <ThemeContext.Provider value={{ activeTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{activeTheme, toggleTheme}}>
       <ThemeProvider theme={activeTheme}>
-        <GlobalStyles />
+        <GlobalStyles/>
         {routing}
       </ThemeProvider>
     </ThemeContext.Provider>

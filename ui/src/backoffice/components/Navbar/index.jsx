@@ -1,4 +1,4 @@
-import { useLocation, Link as RouterLink } from "react-router-dom";
+import {useLocation, Link as RouterLink} from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -10,8 +10,8 @@ import {
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 
-const BackofficeNavbar = ({ onMobileNavOpen, ...rest }) => {
-  const { pathname } = useLocation();
+const BackofficeNavbar = ({onMobileNavOpen, ...rest}) => {
+  const {pathname} = useLocation();
 
   const breadcrumbsLabels = pathname.split("/").filter((word) => word !== "");
 
@@ -33,7 +33,7 @@ const BackofficeNavbar = ({ onMobileNavOpen, ...rest }) => {
             color: "text.primary",
           }}
         >
-          {breadcrumbs.map(({ label, href }, idx) => (
+          {breadcrumbs.map(({label, href}, idx) => (
             <RouterLink key={`breadcrumbs-${idx}`} to={href}>
               <Typography
                 sx={{
@@ -45,13 +45,13 @@ const BackofficeNavbar = ({ onMobileNavOpen, ...rest }) => {
             </RouterLink>
           ))}
         </Breadcrumbs>
-        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{flexGrow: 1}}/>
         <Hidden lgDown>
           <Typography variant="subtitle1">admin@gmail.com</Typography>
         </Hidden>
         <Hidden lgUp>
           <IconButton color="inherit" onClick={onMobileNavOpen}>
-            <MenuIcon />
+            <MenuIcon/>
           </IconButton>
         </Hidden>
       </Toolbar>

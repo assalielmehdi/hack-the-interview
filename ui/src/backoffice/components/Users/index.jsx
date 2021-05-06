@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
+import {useState, useEffect} from "react";
+import {Link as RouterLink} from "react-router-dom";
+import {makeStyles} from "@material-ui/core/styles";
 import {
   Box,
   Container,
@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import { getUsers } from "../../../api/userApi";
+import {getUsers} from "../../../api/userApi";
 import DataLoader from "../DataLoader";
 
 const columns = [
@@ -57,14 +57,14 @@ const Users = () => {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [filter, setFilter] = useState({ text: "", users });
+  const [filter, setFilter] = useState({text: "", users});
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const users = await getUsers();
         setUsers(users);
-        setFilter({ text: "", users });
+        setFilter({text: "", users});
       } catch (e) {
         setError(true);
       } finally {
@@ -102,7 +102,7 @@ const Users = () => {
         <Container maxWidth={false}>
           <Box display="flex" alignItems="flex-end" mb={4}>
             <SearchOutlinedIcon
-              sx={{ color: "action.active", mr: 1, my: 0.5 }}
+              sx={{color: "action.active", mr: 1, my: 0.5}}
             />
             <TextField
               label="Filter"
@@ -130,11 +130,11 @@ const Users = () => {
                 <TableHead>
                   <TableRow>
                     {columns
-                      .filter(({ show }) => show)
-                      .map(({ label, key }) => (
+                      .filter(({show}) => show)
+                      .map(({label, key}) => (
                         <TableCell key={key}>{label}</TableCell>
                       ))}
-                    <TableCell />
+                    <TableCell/>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -149,8 +149,8 @@ const Users = () => {
                           key={user.id}
                         >
                           {columns
-                            .filter(({ show }) => show)
-                            .map(({ key }) => {
+                            .filter(({show}) => show)
+                            .map(({key}) => {
                               return (
                                 <TableCell key={`${user.id}-${key}`}>
                                   {user[key]}
@@ -159,8 +159,8 @@ const Users = () => {
                             })}
                           <TableCell>
                             <RouterLink to={`/backoffice/users/${user.id}`}>
-                              <IconButton sx={{ color: "text.primary" }}>
-                                <OpenInNewIcon fontSize="small" />
+                              <IconButton sx={{color: "text.primary"}}>
+                                <OpenInNewIcon fontSize="small"/>
                               </IconButton>
                             </RouterLink>
                           </TableCell>

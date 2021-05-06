@@ -1,5 +1,5 @@
-import { useState, useContext } from "react";
-import { useParams, useNavigate, Link as RouterLink } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {useParams, useNavigate, Link as RouterLink} from "react-router-dom";
 import {
   Box,
   Container,
@@ -18,17 +18,19 @@ import {
   Alert,
   LinearProgress,
   Rating,
+  Slider,
 } from "@material-ui/core";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import { Context } from "../../../context";
+import {getLevel, updateLevel, deleteLevel} from "../../../api/levelApi";
+import {getLevelQuestions} from "../../../api/questionApi";
+import DataLoader from "../DataLoader";
 
-const LevelQuestion = ({ id, name, difficulty }) => (
-  <Grid key={`level-question-${id}`} item sx={{ mt: 1 }} xs={12} sm={6} md={4}>
+const LevelQuestion = ({id, name, difficulty}, topicId, levelId) => (
+  <Grid key={`level-question-${id}`} item sx={{mt: 1}} xs={12} sm={6} md={4}>
     <Paper elevation={2}>
       <List dense={false}>
         <ListItem>
-          <ListItemText>{name}</ListItemText>
-
+          <ListItemText sx={{mr: 2, overflow: "hidden"}}>{name}</ListItemText>
           <Rating
             name="half-rating-read"
             defaultValue={difficulty / 2}
@@ -36,9 +38,11 @@ const LevelQuestion = ({ id, name, difficulty }) => (
             readOnly
           />
           <ListItemSecondaryAction>
-            <IconButton edge="end">
-              <OpenInNewIcon />
-            </IconButton>
+            <RouterLink to={`/backoffice/topics/${topicId}/levels/${levelId}/questions/${id}`}>
+              <IconButton edge="end" sx={{color: "text.primary"}}>
+                <OpenInNewIcon/>
+              </IconButton>
+            </RouterLink>
           </ListItemSecondaryAction>
         </ListItem>
       </List>
@@ -47,18 +51,17 @@ const LevelQuestion = ({ id, name, difficulty }) => (
 );
 
 const LevelForm = () => {
-  const { _topicId, _id, topicId = +_topicId, id = +_id } = useParams();
+  const {topicId, levelId} = useParams();
 
-  const { topics, updateLevel, deleteLevel } = useContext(Context);
-  const level = topics
-    .find(({ id }) => id === topicId)
-    .levels.find((level) => level.id === id);
+  const [level, setLevel] = useState({});
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState(5);
+  const [questions, setQuestions] = useState([]);
 
-  const [name, setName] = useState(level ? level.name : "");
-  const [description, setDescription] = useState(
-    level ? level.description : ""
-  );
+  const [isFetchLoading, setFetchLoading] = useState(true);
   const [isLoading, setLoading] = useState(false);
+  const [isFetchError, setFetchError] = useState(false);
   const [isError, setError] = useState(false);
 
   const navigate = useNavigate();
@@ -66,7 +69,7 @@ const LevelForm = () => {
   const onLevelUpdate = async () => {
     try {
       setLoading(true);
-      await updateLevel(topicId, id, { name, description });
+      await updateLevel(levelId, {name, description, priority});
       navigate(`/backoffice/topics/${topicId}`);
     } catch (e) {
       setLoading(false);
@@ -77,7 +80,7 @@ const LevelForm = () => {
   const onLevelDelete = async () => {
     try {
       setLoading(true);
-      await deleteLevel(topicId, id);
+      await deleteLevel(levelId);
       navigate(`/backoffice/topics/${topicId}`);
     } catch (e) {
       setLoading(false);
@@ -85,87 +88,148 @@ const LevelForm = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchLevel = async () => {
+      try {
+        const level = await getLevel(levelId);
+        const questions = await getLevelQuestions(levelId);
+        setLevel(level);
+        setName(level.name);
+        setDescription(level.description);
+        setPriority(level.priority);
+        setQuestions(
+          questions.sort(
+            (question1, question2) =>
+              question1.difficulty - question2.difficulty
+          )
+        );
+      } catch (e) {
+        setFetchError(true);
+      } finally {
+        setFetchLoading(false);
+      }
+    };
+
+    fetchLevel();
+  }, [isFetchLoading, levelId]);
+
   return (
-    <Box
-      sx={{
-        backgroundColor: "background.default",
-        minHeight: "100%",
+    <DataLoader
+      isError={isFetchError}
+      isLoading={isFetchLoading}
+      onReload={() => {
+        setFetchError(false);
+        setFetchLoading(true);
       }}
     >
-      {!level && (
-        <Box sx={{ width: "100%", p: 2 }}>
-          <Alert severity="error">
-            Level with id={id} in Topic with id={topicId} not found!
-          </Alert>
-        </Box>
-      )}
-      {level && (
-        <>
-          {isLoading && (
-            <Box sx={{ width: "100%" }}>
-              <LinearProgress />
-            </Box>
-          )}
-          {isError && (
-            <Box sx={{ width: "100%", p: 2 }}>
-              <Alert severity="error" onClose={() => setError(false)}>
-                An error occurred when trying to update or delete the resource!
-              </Alert>
-            </Box>
-          )}
-          <Container maxWidth={false} sx={{ py: 3 }}>
-            <FormControl fullWidth sx={{ my: 2 }} variant="standard">
-              <InputLabel htmlFor="name">Name</InputLabel>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </FormControl>
-            <FormControl fullWidth sx={{ my: 2 }} variant="standard">
-              <InputLabel htmlFor="description">Description</InputLabel>
-              <Input
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </FormControl>
-            <Box my={2} sx={{ flexGrow: 1 }}>
-              <Grid container mb={3}>
-                <Grid item xs={12} sm={6} display="flex" alignItems="flex-end">
-                  <Typography variant="caption" color="text.secondary">
-                    Questions
-                  </Typography>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  display="flex"
-                  alignItems="flex-end"
-                  justifyContent="flex-end"
-                >
-                  <RouterLink
-                    to={`/backoffice/topics/${topicId}/levels/${id}/add`}
+      <Box
+        sx={{
+          backgroundColor: "background.default",
+          minHeight: "100%",
+        }}
+      >
+        {!level && (
+          <Box sx={{width: "100%", p: 2}}>
+            <Alert severity="error">
+              Level with id={levelId} in Topic with id={topicId} not found!
+            </Alert>
+          </Box>
+        )}
+        {level && (
+          <>
+            {isLoading && (
+              <Box sx={{width: "100%"}}>
+                <LinearProgress/>
+              </Box>
+            )}
+            {isError && (
+              <Box sx={{width: "100%", p: 2}}>
+                <Alert severity="error" onClose={() => setError(false)}>
+                  An error occurred when trying to update or delete the
+                  resource!
+                </Alert>
+              </Box>
+            )}
+            <Container maxWidth={false} sx={{py: 3}}>
+              <FormControl fullWidth sx={{my: 2}} variant="standard">
+                <InputLabel htmlFor="name">Name</InputLabel>
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </FormControl>
+              <FormControl fullWidth sx={{my: 2}} variant="standard">
+                <InputLabel htmlFor="description">Description</InputLabel>
+                <Input
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </FormControl>
+              <Box mt={2} maxWidth={400}>
+                <Typography variant="caption" color="text.secondary">
+                  Priority
+                </Typography>
+                <Slider
+                  value={priority}
+                  valueLabelDisplay="off"
+                  step={1}
+                  marks={Array.from(Array(11).keys())
+                    .slice(1)
+                    .map((value) => ({value, label: value}))}
+                  min={1}
+                  max={10}
+                  onChange={(e) => setPriority(e.target.value)}
+                />
+              </Box>
+              <Box my={2} sx={{flexGrow: 1}}>
+                <Grid container mb={3}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    display="flex"
+                    alignItems="flex-end"
                   >
-                    <Button>Add Question</Button>
-                  </RouterLink>
+                    <Typography variant="caption" color="text.secondary">
+                      Questions
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={6}
+                    display="flex"
+                    alignItems="flex-end"
+                    justifyContent="flex-end"
+                  >
+                    <RouterLink
+                      to={`/backoffice/topics/${topicId}/levels/${levelId}/add`}
+                    >
+                      <Button>Add Question</Button>
+                    </RouterLink>
+                  </Grid>
                 </Grid>
-              </Grid>
-              <Grid container spacing={1}>
-                {level.questions.map(LevelQuestion)}
-              </Grid>
-            </Box>
-            <Box mt={2} display="flex" justifyContent="flex-end">
-              <Button onClick={onLevelUpdate}>Update</Button>
-              <Button sx={{ ml: 2 }} color="secondary" onClick={onLevelDelete}>
-                Delete
-              </Button>
-            </Box>
-          </Container>
-        </>
-      )}
-    </Box>
+                <Grid container spacing={1}>
+                  {questions.map((question) => LevelQuestion(question, topicId, levelId))}
+                </Grid>
+              </Box>
+              <Box mt={2} display="flex" justifyContent="flex-end">
+                <Button onClick={onLevelUpdate}>Update</Button>
+                <Button
+                  sx={{ml: 2}}
+                  color="secondary"
+                  onClick={onLevelDelete}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Container>
+          </>
+        )}
+      </Box>
+    </DataLoader>
   );
 };
 

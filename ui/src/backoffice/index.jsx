@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Helmet from "react-helmet";
-import { Outlet } from "react-router-dom";
-import { experimentalStyled } from "@material-ui/core";
+import {Outlet} from "react-router-dom";
+import {experimentalStyled} from "@material-ui/core";
 import BackofficeNavbar from "./components/Navbar";
 import BackofficeSidebar from "./components/Sidebar";
 
-const BackofficeLayoutRoot = experimentalStyled("div")(({ theme }) => ({
+const BackofficeLayoutRoot = experimentalStyled("div")(({theme}) => ({
   backgroundColor: theme.palette.background.default,
   display: "flex",
   height: "100%",
@@ -13,7 +13,7 @@ const BackofficeLayoutRoot = experimentalStyled("div")(({ theme }) => ({
   width: "100%",
 }));
 
-const BackofficeLayoutWrapper = experimentalStyled("div")(({ theme }) => ({
+const BackofficeLayoutWrapper = experimentalStyled("div")(({theme}) => ({
   display: "flex",
   flex: "1 1 auto",
   overflow: "hidden",
@@ -44,7 +44,7 @@ const Backoffice = () => {
         <title>Backoffice | Hack The Interview</title>
       </Helmet>
       <BackofficeLayoutRoot>
-        <BackofficeNavbar onMobileNavOpen={() => setMobileNavOpen(true)} />
+        <BackofficeNavbar onMobileNavOpen={() => setMobileNavOpen(true)}/>
         <BackofficeSidebar
           onMobileClose={() => setMobileNavOpen(false)}
           openMobile={isMobileNavOpen}
@@ -52,7 +52,7 @@ const Backoffice = () => {
         <BackofficeLayoutWrapper>
           <BackofficeLayoutContainer>
             <BackofficeLayoutContent>
-              <Outlet />
+              <Outlet/>
             </BackofficeLayoutContent>
           </BackofficeLayoutContainer>
         </BackofficeLayoutWrapper>

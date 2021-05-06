@@ -1,4 +1,4 @@
-import { baseUrl } from "./serverConfig";
+import {baseUrl} from "./serverConfig";
 
 export const getUsers = async () => {
   const response = await fetch(`${baseUrl}/users`);
@@ -6,7 +6,7 @@ export const getUsers = async () => {
     throw Error();
   }
   const {
-    _embedded: { users },
+    _embedded: {users},
   } = await response.json();
   return users;
 };

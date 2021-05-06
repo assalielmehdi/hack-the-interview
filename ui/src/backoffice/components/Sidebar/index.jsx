@@ -1,5 +1,5 @@
-import { useEffect, useContext, useState } from "react";
-import { useLocation } from "react-router-dom";
+import {useEffect, useContext, useState} from "react";
+import {useLocation} from "react-router-dom";
 import {
   Box,
   Drawer,
@@ -12,7 +12,7 @@ import {
 import Brightness5Icon from "@material-ui/icons/Brightness5";
 import Brightness2Icon from "@material-ui/icons/Brightness2";
 import NavItem from "./NavItem";
-import { ThemeContext } from "../../../App";
+import {ThemeContext} from "../../../App";
 
 const items = [
   {
@@ -30,12 +30,13 @@ const items = [
 ];
 
 const BackofficeSidebar = ({
-  onMobileClose = () => {},
-  openMobile = false,
-}) => {
+                             onMobileClose = () => {
+                             },
+                             openMobile = false,
+                           }) => {
   const location = useLocation();
 
-  const { toggleTheme } = useContext(ThemeContext);
+  const {toggleTheme} = useContext(ThemeContext);
 
   const [toggleChecked, setToggleChecked] = useState(false);
 
@@ -57,8 +58,8 @@ const BackofficeSidebar = ({
           spacing={1}
           pb={3}
         >
-          <Grid item sx={{ display: "flex", pl: 0 }}>
-            <Brightness5Icon fontSize="small" />
+          <Grid item sx={{display: "flex", pl: 0}}>
+            <Brightness5Icon fontSize="small"/>
           </Grid>
           <Grid item>
             <Switch
@@ -71,8 +72,8 @@ const BackofficeSidebar = ({
               }}
             />
           </Grid>
-          <Grid item sx={{ display: "flex" }}>
-            <Brightness2Icon fontSize="small" />
+          <Grid item sx={{display: "flex"}}>
+            <Brightness2Icon fontSize="small"/>
           </Grid>
         </Grid>
       </Typography>
@@ -87,15 +88,15 @@ const BackofficeSidebar = ({
         height: "100%",
       }}
     >
-      <Box sx={{ p: 2 }}>
+      <Box sx={{p: 2}}>
         <List>
           {items.map((item) => (
-            <NavItem href={item.href} key={item.title} title={item.title} />
+            <NavItem href={item.href} key={item.title} title={item.title}/>
           ))}
         </List>
       </Box>
-      <Box sx={{ flexGrow: 1 }} />
-      <Toggle />
+      <Box sx={{flexGrow: 1}}/>
+      <Toggle/>
     </Box>
   );
 

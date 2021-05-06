@@ -1,4 +1,4 @@
-import { baseUrl } from "./serverConfig";
+import {baseUrl} from "./serverConfig";
 
 export const getTopics = async () => {
   const response = await fetch(`${baseUrl}/topics`);
@@ -6,7 +6,7 @@ export const getTopics = async () => {
     throw Error();
   }
   const {
-    _embedded: { topics },
+    _embedded: {topics},
   } = await response.json();
   return topics;
 };

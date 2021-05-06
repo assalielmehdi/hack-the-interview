@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
+import {useState, useEffect} from "react";
+import {Link as RouterLink} from "react-router-dom";
+import {makeStyles} from "@material-ui/core/styles";
 import {
   Box,
   Container,
@@ -19,7 +19,7 @@ import {
 } from "@material-ui/core";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import { getTopics } from "../../../api/topicApi";
+import {getTopics} from "../../../api/topicApi";
 import DataLoader from "../DataLoader";
 
 const columns = [
@@ -59,7 +59,7 @@ const Topics = () => {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [filter, setFilter] = useState({ text: "", topics });
+  const [filter, setFilter] = useState({text: "", topics});
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -75,7 +75,7 @@ const Topics = () => {
       try {
         const topics = await getTopics();
         setTopics(topics);
-        setFilter({ text: "", topics });
+        setFilter({text: "", topics});
       } catch (e) {
         setError(true);
       } finally {
@@ -113,7 +113,7 @@ const Topics = () => {
               mb={1}
             >
               <SearchOutlinedIcon
-                sx={{ color: "action.active", mr: 1, my: 0.5 }}
+                sx={{color: "action.active", mr: 1, my: 0.5}}
               />
               <TextField
                 label="Filter"
@@ -154,11 +154,11 @@ const Topics = () => {
                 <TableHead>
                   <TableRow>
                     {columns
-                      .filter(({ show }) => show)
-                      .map(({ label, key }) => (
+                      .filter(({show}) => show)
+                      .map(({label, key}) => (
                         <TableCell key={key}>{label}</TableCell>
                       ))}
-                    <TableCell />
+                    <TableCell/>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -173,8 +173,8 @@ const Topics = () => {
                           key={topic.id}
                         >
                           {columns
-                            .filter(({ show }) => show)
-                            .map(({ key }) => {
+                            .filter(({show}) => show)
+                            .map(({key}) => {
                               return (
                                 <TableCell key={`${topic.id}-${key}`}>
                                   {topic[key]}
@@ -183,8 +183,8 @@ const Topics = () => {
                             })}
                           <TableCell>
                             <RouterLink to={`/backoffice/topics/${topic.id}`}>
-                              <IconButton sx={{ color: "text.primary" }}>
-                                <OpenInNewIcon fontSize="small" />
+                              <IconButton sx={{color: "text.primary"}}>
+                                <OpenInNewIcon fontSize="small"/>
                               </IconButton>
                             </RouterLink>
                           </TableCell>

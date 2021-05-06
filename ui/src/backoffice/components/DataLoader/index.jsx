@@ -1,11 +1,11 @@
-import { Button, Box, Typography, LinearProgress } from "@material-ui/core";
+import {Button, Box, Typography, LinearProgress} from "@material-ui/core";
 
-const DataLoader = ({ isLoading, isError, onReload, children }) => {
+const DataLoader = ({isLoading, isError, onReload, children}) => {
   return (
     <>
       {isError && (
         <Box
-          sx={{ width: "100%" }}
+          sx={{width: "100%"}}
           display="flex"
           justifyContent="center"
           p={5}
@@ -17,8 +17,8 @@ const DataLoader = ({ isLoading, isError, onReload, children }) => {
         </Box>
       )}
       {isLoading && (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
+        <Box sx={{width: "100%"}}>
+          <LinearProgress/>
         </Box>
       )}
       {!isLoading && !isError && children}

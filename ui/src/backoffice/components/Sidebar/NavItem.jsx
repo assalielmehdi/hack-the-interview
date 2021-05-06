@@ -3,19 +3,19 @@ import {
   matchPath,
   useLocation,
 } from "react-router-dom";
-import { Button, ListItem } from "@material-ui/core";
+import {Button, ListItem} from "@material-ui/core";
 
-const NavItem = ({ href, title, ...rest }) => {
+const NavItem = ({href, title, ...rest}) => {
   const location = useLocation();
 
   const active = href
     ? !!matchPath(
-        {
-          path: href,
-          end: false,
-        },
-        location.pathname
-      )
+      {
+        path: href,
+        end: false,
+      },
+      location.pathname
+    )
     : false;
 
   return (

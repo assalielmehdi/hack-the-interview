@@ -1,4 +1,4 @@
-import { Link as RouterLink } from "react-router-dom";
+import {Link as RouterLink} from "react-router-dom";
 import {
   Box,
   Card,
@@ -29,7 +29,7 @@ const NotFound = () => (
           textAlign: "center",
         }}
       >
-        <Typography sx={{ fontSize: 60 }}>404</Typography>
+        <Typography sx={{fontSize: 60}}>404</Typography>
       </CardContent>
       <CardActions
         sx={{

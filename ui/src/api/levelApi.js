@@ -1,4 +1,4 @@
-import { baseUrl } from "./serverConfig";
+import {baseUrl} from "./serverConfig";
 
 export const getTopicLevels = async (topicId) => {
   const response = await fetch(`${baseUrl}/topics/${topicId}/levels`);
@@ -6,7 +6,7 @@ export const getTopicLevels = async (topicId) => {
     throw Error();
   }
   const {
-    _embedded: { levels },
+    _embedded: {levels},
   } = await response.json();
   return levels;
 };
@@ -30,7 +30,7 @@ export const addTopicLevel = async (topicId, payload) => {
   if (!response.ok) {
     throw Error();
   }
-  const { id } = await response.json();
+  const {id} = await response.json();
   response = await fetch(`${baseUrl}/levels/${id}/topic`, {
     method: "PUT",
     headers: {
