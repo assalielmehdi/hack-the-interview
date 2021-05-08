@@ -8,7 +8,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
-@RepositoryRestResource(collectionResourceRel = "question", path = "questions")
+@RepositoryRestResource(collectionResourceRel = "questions", path = "questions")
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
   List<Question> findAllByUsersContainsAndLevel(User user, Level level);

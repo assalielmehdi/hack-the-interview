@@ -7,7 +7,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
-@RepositoryRestResource(collectionResourceRel = "level", path = "levels")
+@RepositoryRestResource(collectionResourceRel = "levels", path = "levels")
 public interface LevelRepository extends JpaRepository<Level, Long> {
 
   List<Level> findAllByTopic(Topic topic);

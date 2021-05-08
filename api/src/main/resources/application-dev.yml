@@ -1,0 +1,21 @@
+server:
+  port: ${SERVER_PORT:9999}
+  servlet:
+    contextPath: /api
+
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:hack_the_interview
+    username: root
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+cors:
+  origins:
+    - http://localhost:3000

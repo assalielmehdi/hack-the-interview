@@ -7,7 +7,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
-@RepositoryRestResource(collectionResourceRel = "tag", path = "tags")
+@RepositoryRestResource(collectionResourceRel = "tags", path = "tags")
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
   List<Tag> findAllByQuestionsContains(Question question);

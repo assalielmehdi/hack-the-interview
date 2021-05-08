@@ -1,5 +1,7 @@
 server:
   port: ${SERVER_PORT:9999}
+  servlet:
+    contextPath: /api
 
 spring:
   datasource:
@@ -13,3 +15,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect # The SQL dialect makes Hibernate generate better SQL for the chosen database
+
+cors:
+  origins:
+    - http://localhost:3000

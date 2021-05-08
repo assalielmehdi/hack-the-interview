@@ -8,7 +8,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
-@RepositoryRestResource(collectionResourceRel = "choice", path = "choices")
+@RepositoryRestResource(collectionResourceRel = "choices", path = "choices")
 public interface ChoiceRepository extends JpaRepository<Choice, Long> {
 
   List<Choice> findAllByQuestion(Question question);

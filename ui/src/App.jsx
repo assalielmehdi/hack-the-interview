@@ -1,18 +1,32 @@
-import { useRoutes } from "react-router-dom";
-import { ThemeProvider } from "@material-ui/core";
+import React, {useState} from "react";
+import {useRoutes} from "react-router-dom";
+import {ThemeProvider} from "@material-ui/core";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import GlobalStyles from "./theme/GlobalStyles";
-import theme from "./theme";
+import {lightTheme, darkTheme} from "./theme";
 import routes from "./routes";
+
+export const ThemeContext = React.createContext({});
 
 const App = () => {
   const routing = useRoutes(routes);
 
+  const [activeTheme, setActiveTheme] = useState(
+    localStorage.getItem("theme") === "dark" ? darkTheme : lightTheme
+  );
+
+  const toggleTheme = () => {
+    localStorage.setItem("theme", activeTheme === lightTheme ? "dark" : "false");
+    setActiveTheme(activeTheme === lightTheme ? darkTheme : lightTheme);
+  };
+
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyles />
-      {routing}
-    </ThemeProvider>
+    <ThemeContext.Provider value={{activeTheme, toggleTheme}}>
+      <ThemeProvider theme={activeTheme}>
+        <GlobalStyles/>
+        {routing}
+      </ThemeProvider>
+    </ThemeContext.Provider>
   );
 };
 
