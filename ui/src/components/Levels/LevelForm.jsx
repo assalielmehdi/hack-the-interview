@@ -17,25 +17,28 @@ import {
   ListItemSecondaryAction,
   Alert,
   LinearProgress,
-  Chip,
+  Rating,
+  Slider,
 } from "@material-ui/core";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import {getTopic, updateTopic, deleteTopic} from "../../../api/topicApi";
-import {getTopicLevels} from "../../../api/levelApi";
+import {getLevel, updateLevel, deleteLevel} from "../../api/levelApi";
+import {getLevelQuestions} from "../../api/questionApi";
 import DataLoader from "../DataLoader";
 
-const TopicLevel = ({id, name, priority}, topicId) => (
-  <Grid key={`topic-level-${id}`} item sx={{mt: 1}} xs={12} sm={6} md={4}>
+const LevelQuestion = ({id, name, difficulty}, topicId, levelId) => (
+  <Grid key={`level-question-${id}`} item sx={{mt: 1}} xs={12} sm={6} md={4}>
     <Paper elevation={2}>
       <List dense={false}>
         <ListItem>
-          <ListItemText primary={name} sx={{mr: 2, overflow: "hidden"}}/>
-          <Chip
-            label={`${priority}`}
-            sx={{mr: 1, backgroundColor: "background.paper"}}
+          <ListItemText sx={{mr: 2, overflow: "hidden"}}>{name}</ListItemText>
+          <Rating
+            name="half-rating-read"
+            defaultValue={difficulty / 2}
+            precision={0.5}
+            readOnly
           />
           <ListItemSecondaryAction>
-            <RouterLink to={`/backoffice/topics/${topicId}/levels/${id}`}>
+            <RouterLink to={`/topics/${topicId}/levels/${levelId}/questions/${id}`}>
               <IconButton edge="end" sx={{color: "text.primary"}}>
                 <OpenInNewIcon/>
               </IconButton>
@@ -47,13 +50,14 @@ const TopicLevel = ({id, name, priority}, topicId) => (
   </Grid>
 );
 
-const TopicForm = () => {
-  const {id} = useParams();
+const LevelForm = () => {
+  const {topicId, levelId} = useParams();
 
-  const [topic, setTopic] = useState({});
+  const [level, setLevel] = useState({});
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [levels, setLevels] = useState([]);
+  const [priority, setPriority] = useState(5);
+  const [questions, setQuestions] = useState([]);
 
   const [isFetchLoading, setFetchLoading] = useState(true);
   const [isLoading, setLoading] = useState(false);
@@ -62,16 +66,42 @@ const TopicForm = () => {
 
   const navigate = useNavigate();
 
+  const onLevelUpdate = async () => {
+    try {
+      setLoading(true);
+      await updateLevel(levelId, {name, description, priority});
+      navigate(`/topics/${topicId}`);
+    } catch (e) {
+      setLoading(false);
+      setError(true);
+    }
+  };
+
+  const onLevelDelete = async () => {
+    try {
+      setLoading(true);
+      await deleteLevel(levelId);
+      navigate(`/topics/${topicId}`);
+    } catch (e) {
+      setLoading(false);
+      setError(true);
+    }
+  };
+
   useEffect(() => {
-    const fetchTopic = async () => {
+    const fetchLevel = async () => {
       try {
-        const topic = await getTopic(id);
-        const levels = await getTopicLevels(id);
-        setTopic(topic);
-        setName(topic.name);
-        setDescription(topic.description);
-        setLevels(
-          levels.sort((level1, level2) => level1.priority - level2.priority)
+        const level = await getLevel(levelId);
+        const questions = await getLevelQuestions(levelId);
+        setLevel(level);
+        setName(level.name);
+        setDescription(level.description);
+        setPriority(level.priority);
+        setQuestions(
+          questions.sort(
+            (question1, question2) =>
+              question1.difficulty - question2.difficulty
+          )
         );
       } catch (e) {
         setFetchError(true);
@@ -80,30 +110,8 @@ const TopicForm = () => {
       }
     };
 
-    fetchTopic();
-  }, [isFetchLoading, id]);
-
-  const onTopicUpdate = async () => {
-    try {
-      setLoading(true);
-      await updateTopic(id, {name, description});
-      navigate("/backoffice/topics");
-    } catch (e) {
-      setLoading(false);
-      setError(true);
-    }
-  };
-
-  const onTopicDelete = async () => {
-    try {
-      setLoading(true);
-      await deleteTopic(id);
-      navigate("/backoffice/topics");
-    } catch (e) {
-      setLoading(false);
-      setError(true);
-    }
-  };
+    fetchLevel();
+  }, [isFetchLoading, levelId]);
 
   return (
     <DataLoader
@@ -120,12 +128,14 @@ const TopicForm = () => {
           minHeight: "100%",
         }}
       >
-        {!topic && (
+        {!level && (
           <Box sx={{width: "100%", p: 2}}>
-            <Alert severity="error">Topic with id={id} not found!</Alert>
+            <Alert severity="error">
+              Level with id={levelId} in Topic with id={topicId} not found!
+            </Alert>
           </Box>
         )}
-        {topic && (
+        {level && (
           <>
             {isLoading && (
               <Box sx={{width: "100%"}}>
@@ -157,6 +167,22 @@ const TopicForm = () => {
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </FormControl>
+              <Box mt={2} maxWidth={400}>
+                <Typography variant="caption" color="text.secondary">
+                  Priority
+                </Typography>
+                <Slider
+                  value={priority}
+                  valueLabelDisplay="off"
+                  step={1}
+                  marks={Array.from(Array(11).keys())
+                    .slice(1)
+                    .map((value) => ({value, label: value}))}
+                  min={1}
+                  max={10}
+                  onChange={(e) => setPriority(e.target.value)}
+                />
+              </Box>
               <Box my={2} sx={{flexGrow: 1}}>
                 <Grid container mb={3}>
                   <Grid
@@ -167,7 +193,7 @@ const TopicForm = () => {
                     alignItems="flex-end"
                   >
                     <Typography variant="caption" color="text.secondary">
-                      Levels
+                      Questions
                     </Typography>
                   </Grid>
                   <Grid
@@ -178,21 +204,23 @@ const TopicForm = () => {
                     alignItems="flex-end"
                     justifyContent="flex-end"
                   >
-                    <RouterLink to={`/backoffice/topics/${id}/add`}>
-                      <Button>Add Level</Button>
+                    <RouterLink
+                      to={`/topics/${topicId}/levels/${levelId}/add`}
+                    >
+                      <Button>Add Question</Button>
                     </RouterLink>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
-                  {levels.map((topic) => TopicLevel(topic, id))}
+                  {questions.map((question) => LevelQuestion(question, topicId, levelId))}
                 </Grid>
               </Box>
               <Box mt={2} display="flex" justifyContent="flex-end">
-                <Button onClick={onTopicUpdate}>Update</Button>
+                <Button onClick={onLevelUpdate}>Update</Button>
                 <Button
                   sx={{ml: 2}}
                   color="secondary"
-                  onClick={onTopicDelete}
+                  onClick={onLevelDelete}
                 >
                   Delete
                 </Button>
@@ -205,4 +233,4 @@ const TopicForm = () => {
   );
 };
 
-export default TopicForm;
+export default LevelForm;

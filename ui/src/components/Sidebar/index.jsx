@@ -12,19 +12,19 @@ import {
 import Brightness5Icon from "@material-ui/icons/Brightness5";
 import Brightness2Icon from "@material-ui/icons/Brightness2";
 import NavItem from "./NavItem";
-import {ThemeContext} from "../../../App";
+import {ThemeContext} from "../../App";
 
 const items = [
   {
-    href: "/backoffice/users",
+    href: "/users",
     title: "Users",
   },
   {
-    href: "/backoffice/topics",
+    href: "/topics",
     title: "Topics",
   },
   {
-    href: "/backoffice/tags",
+    href: "/tags",
     title: "Tags",
   },
 ];

@@ -1,21 +1,19 @@
-import {Navigate} from "react-router";
-import DashboardLayout from "./backoffice";
-import Users from "./backoffice/components/Users";
-import UserForm from "./backoffice/components/Users/UserForm";
-import Topics from "./backoffice/components/Topics";
-import TopicForm from "./backoffice/components/Topics/TopicForm";
-import NewTopicForm from "./backoffice/components/Topics/NewTopicForm";
-import NewLevelForm from "./backoffice/components/Levels/NewLevelForm";
-import LevelForm from "./backoffice/components/Levels/LevelForm";
-import NewQuestionForm from "./backoffice/components/Questions/NewQuestionForm";
-import Tags from "./backoffice/components/Tags";
+import DashboardLayout from "./components";
+import Users from "./components/Users";
+import UserForm from "./components/Users/UserForm";
+import Topics from "./components/Topics";
+import TopicForm from "./components/Topics/TopicForm";
+import NewTopicForm from "./components/Topics/NewTopicForm";
+import NewLevelForm from "./components/Levels/NewLevelForm";
+import LevelForm from "./components/Levels/LevelForm";
+import NewQuestionForm from "./components/Questions/NewQuestionForm";
+import Tags from "./components/Tags";
 import NotFound from "./NotFound";
-import Home from "./Home";
-import QuestionForm from "./backoffice/components/Questions/QuestionForm";
+import QuestionForm from "./components/Questions/QuestionForm";
 
 const routes = [
   {
-    path: "backoffice",
+    path: "/",
     element: <DashboardLayout/>,
     children: [
       {path: "users", element: <Users/>},
@@ -45,16 +43,8 @@ const routes = [
     ],
   },
   {
-    path: "/error",
-    element: <NotFound/>,
-  },
-  {
-    path: "/",
-    element: <Home/>,
-  },
-  {
     path: "*",
-    element: <Navigate to="/error"/>,
+    element: <NotFound/>,
   },
 ];
 

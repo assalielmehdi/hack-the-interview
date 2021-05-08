@@ -10,7 +10,7 @@ import {
   Alert,
   LinearProgress,
 } from "@material-ui/core";
-import {getUser, updateUser, deleteUser} from "../../../api/userApi";
+import {getUser, updateUser, deleteUser} from "../../api/userApi";
 import DataLoader from "../DataLoader";
 
 const UserForm = () => {
@@ -48,7 +48,7 @@ const UserForm = () => {
     try {
       setLoading(true);
       await updateUser(id, {...user, name});
-      navigate("/backoffice/users");
+      navigate("/users");
     } catch (e) {
       setError(true);
       setLoading(false);
@@ -59,7 +59,7 @@ const UserForm = () => {
     try {
       setLoading(true);
       await deleteUser(id);
-      navigate("/backoffice/users");
+      navigate("/users");
     } catch (e) {
       setError(true);
       setLoading(false);

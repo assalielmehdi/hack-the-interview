@@ -6,25 +6,36 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Chip,
   Container,
   FormControl,
   Grid,
+  IconButton,
   Input,
   InputLabel,
   LinearProgress,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
   MenuItem,
+  Paper,
   Select,
   Slider,
+  Stack,
   Tab,
   Tabs,
   TextField,
   Typography,
 } from "@material-ui/core";
-import {deleteQuestion, getQuestion} from "../../../api/questionApi";
-import {getQuestionTags} from "../../../api/tagApi.js";
-import {getTags} from "../../../api/tagApi";
+import {deleteQuestion, getQuestion, updateQuestion} from "../../api/questionApi";
+import {addQuestionTags, getQuestionTags} from "../../api/tagApi.js";
+import {getTags} from "../../api/tagApi";
 import DataLoader from "../DataLoader";
+import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
+import {addQuestionChoice, deleteChoice, getQuestionChoices} from "../../api/choiceApi";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -40,6 +51,9 @@ const QuestionForm = () => {
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [correctAnswerTab, setCorrectAnswerTab] = useState(0);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [choices, setChoices] = useState([]);
+  const [choiceText, setChoiceText] = useState("");
+  const [choiceChecked, setChoiceChecked] = useState(false);
 
   const [isFetchLoading, setFetchLoading] = useState(true);
   const [isLoading, setLoading] = useState(false);
@@ -49,16 +63,69 @@ const QuestionForm = () => {
   const navigate = useNavigate();
 
   const onQuestionUpdate = async () => {
+    try {
+      setLoading(true);
+      await updateQuestion(questionId, {
+        name,
+        difficulty,
+        content,
+        correctAnswer
+      });
+      await addQuestionTags(
+        questionId,
+        tags.filter(({name}) => selectedTags.includes(name))
+      );
+      choices
+        .filter(({id}) => !id)
+        .forEach(async ({checked, text}) => {
+          await addQuestionChoice(questionId, {correct: checked, content: text});
+        });
+      navigate(`/topics/${topicId}/levels/${levelId}`);
+    } catch (e) {
+      setLoading(false);
+      setError(true);
+    }
   };
 
   const onQuestionDelete = async () => {
     try {
       setLoading(true);
       await deleteQuestion(questionId);
-      navigate(`/backoffice/topics/${topicId}`);
+      navigate(`/topics/${topicId}/levels/${levelId}`);
     } catch (e) {
       setLoading(false);
       setError(true);
+    }
+  };
+
+  const onChoiceAdd = () => {
+    setChoices([
+      ...choices,
+      {
+        checked: choiceChecked,
+        text: choiceText
+      }
+    ])
+    setChoiceText("");
+    setChoiceChecked(false);
+  };
+
+  const onChoiceDelete = async (idx, id) => {
+    console.log(id);
+    try {
+      setLoading(true);
+      if (id) {
+        await deleteChoice(id);
+      }
+      setChoices([
+        ...choices.slice(0, idx),
+        ...choices.slice(idx + 1)
+      ]);
+
+    } catch (e) {
+      setError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,12 +135,14 @@ const QuestionForm = () => {
         const {name, difficulty, content, correctAnswer} = await getQuestion(questionId);
         const tags = await getTags();
         const selectedTags = await getQuestionTags(questionId);
+        const choices = await getQuestionChoices(questionId);
         setName(name);
         setDifficulty(difficulty);
         setContent(content);
         setCorrectAnswer(correctAnswer);
         setTags(tags);
         setSelectedTags(selectedTags.map(({name}) => name));
+        setChoices(choices.map(({id, correct, content}) => ({id, checked: correct, text: content})));
       } catch (e) {
         setFetchError(true);
       } finally {
@@ -82,7 +151,7 @@ const QuestionForm = () => {
     };
 
     fetchQuestion();
-  }, [isFetchLoading]);
+  }, [isFetchLoading, questionId]);
 
   return (
     <DataLoader
@@ -273,6 +342,45 @@ const QuestionForm = () => {
                 </Box>
               </Grid>
             </Grid>
+          </Box>
+          <Box my={2}>
+            <Typography variant="caption" color="text.secondary">
+              Choices
+            </Typography>
+            <Box mt={2}>
+              <Box>
+                <Checkbox sx={{mr: 2}} checked={choiceChecked} onChange={() => setChoiceChecked(!choiceChecked)}
+                          color="default"/>
+                <TextField variant="standard" sx={{mr: 2, minWidth: 500}} value={choiceText}
+                           onChange={(e) => setChoiceText(e.target.value)}/>
+                <Button onClick={onChoiceAdd}>Add Choice</Button>
+              </Box>
+              <Stack spacing={1} sx={{maxWidth: 600, mt: 3}}>
+                {choices.map(({id, checked, text}, idx) => (
+                  <Paper elevation={2}>
+                    <List dense sx={{p: 0}}>
+                      <ListItem>
+                        <ListItemIcon>
+                          <Checkbox
+                            edge="start"
+                            checked={checked}
+                            tabIndex={-1}
+                            disableRipple
+                            disabled
+                          />
+                        </ListItemIcon>
+                        <ListItemText sx={{overflow: "hidden"}}>{text}</ListItemText>
+                        <ListItemSecondaryAction>
+                          <IconButton edge="end" sx={{color: "text.primary"}} onClick={() => onChoiceDelete(idx, id)}>
+                            <DeleteOutlineIcon/>
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    </List>
+                  </Paper>
+                ))}
+              </Stack>
+            </Box>
           </Box>
           <Box mt={2} display="flex" justifyContent="flex-end">
             <Button onClick={onQuestionUpdate}>Update</Button>

@@ -19,7 +19,7 @@ import {
 } from "@material-ui/core";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import {getTopics} from "../../../api/topicApi";
+import {getTopics} from "../../api/topicApi";
 import DataLoader from "../DataLoader";
 
 const columns = [
@@ -142,7 +142,7 @@ const Topics = () => {
               alignItems="flex-end"
               justifyContent="flex-end"
             >
-              <RouterLink to="/backoffice/topics/add">
+              <RouterLink to="/topics/add">
                 <Button>Add Topic</Button>
               </RouterLink>
             </Grid>
@@ -182,7 +182,7 @@ const Topics = () => {
                               );
                             })}
                           <TableCell>
-                            <RouterLink to={`/backoffice/topics/${topic.id}`}>
+                            <RouterLink to={`/topics/${topic.id}`}>
                               <IconButton sx={{color: "text.primary"}}>
                                 <OpenInNewIcon fontSize="small"/>
                               </IconButton>

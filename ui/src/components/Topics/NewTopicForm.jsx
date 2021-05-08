@@ -10,7 +10,7 @@ import {
   LinearProgress,
   Alert,
 } from "@material-ui/core";
-import {addTopic} from "../../../api/topicApi";
+import {addTopic} from "../../api/topicApi";
 
 const NewTopicForm = () => {
   const [name, setName] = useState("");
@@ -25,7 +25,7 @@ const NewTopicForm = () => {
     try {
       setLoading(true);
       await addTopic({name, description});
-      navigate("/backoffice/topics");
+      navigate("/topics");
     } catch (e) {
       setError(true);
       setLoading(false);

@@ -1,30 +1,41 @@
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 import {
+  Alert,
   Box,
+  Button,
+  Checkbox,
+  Chip,
   Container,
   FormControl,
-  InputLabel,
-  Input,
-  Button,
-  LinearProgress,
-  Alert,
-  Slider,
-  Typography,
   Grid,
-  TextField,
-  Tabs,
-  Tab,
-  Select,
+  IconButton,
+  Input,
+  InputLabel,
+  LinearProgress,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
   MenuItem,
-  Chip,
+  Paper,
+  Select,
+  Slider,
+  Stack,
+  Tab,
+  Tabs,
+  TextField,
+  Typography
 } from "@material-ui/core";
-import {addLevelQuestion} from "../../../api/questionApi";
-import {addQuestionTags} from "../../../api/tagApi.js";
-import {getTags} from "../../../api/tagApi";
+import {addLevelQuestion} from "../../api/questionApi";
+import {addQuestionTags} from "../../api/tagApi.js";
+import {getTags} from "../../api/tagApi";
 import DataLoader from "../DataLoader";
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import {addQuestionChoice} from "../../api/choiceApi";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -40,6 +51,9 @@ const NewQuestionForm = () => {
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [correctAnswerTab, setCorrectAnswerTab] = useState(0);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [choices, setChoices] = useState([]);
+  const [choiceText, setChoiceText] = useState("");
+  const [choiceChecked, setChoiceChecked] = useState(false);
 
   const [isFetchLoading, setFetchLoading] = useState(true);
   const [isLoading, setLoading] = useState(false);
@@ -61,12 +75,32 @@ const NewQuestionForm = () => {
         id,
         tags.filter(({name}) => selectedTags.includes(name))
       );
-      navigate(`/backoffice/topics/${topicId}/levels/${levelId}`);
+      choices.forEach(async ({checked, text}) => {
+          await addQuestionChoice(id, {correct: checked, content: text});
+      });
+      navigate(`/topics/${topicId}/levels/${levelId}`);
     } catch (e) {
       setError(true);
       setLoading(false);
     }
   };
+
+  const onChoiceAdd = () => {
+    setChoices([
+      ...choices,
+      {
+        checked: choiceChecked,
+        text: choiceText
+      }
+    ])
+    setChoiceText("");
+    setChoiceChecked(false);
+  };
+
+  const onChoiceDelete = (idx) => setChoices([
+    ...choices.slice(0, idx),
+    ...choices.slice(idx + 1)
+  ]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -272,6 +306,45 @@ const NewQuestionForm = () => {
                 </Box>
               </Grid>
             </Grid>
+          </Box>
+          <Box my={2}>
+            <Typography variant="caption" color="text.secondary">
+              Choices
+            </Typography>
+            <Box mt={2}>
+              <Box>
+                <Checkbox sx={{mr: 2}} checked={choiceChecked} onChange={() => setChoiceChecked(!choiceChecked)}
+                          color="default"/>
+                <TextField variant="standard" sx={{mr: 2, minWidth: 500}} value={choiceText}
+                           onChange={(e) => setChoiceText(e.target.value)}/>
+                <Button onClick={onChoiceAdd}>Add Choice</Button>
+              </Box>
+              <Stack spacing={1} sx={{maxWidth: 600, mt: 3}}>
+                {choices.map(({checked, text}, idx) => (
+                  <Paper elevation={2}>
+                    <List dense sx={{p: 0}}>
+                      <ListItem>
+                        <ListItemIcon>
+                          <Checkbox
+                            edge="start"
+                            checked={checked}
+                            tabIndex={-1}
+                            disableRipple
+                            disabled
+                          />
+                        </ListItemIcon>
+                        <ListItemText sx={{overflow: "hidden"}}>{text}</ListItemText>
+                        <ListItemSecondaryAction>
+                          <IconButton edge="end" sx={{color: "text.primary"}} onClick={() => onChoiceDelete(idx)}>
+                            <DeleteOutlineIcon/>
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    </List>
+                  </Paper>
+                ))}
+              </Stack>
+            </Box>
           </Box>
           <Box mt={2} display="flex" justifyContent="flex-end">
             <Button onClick={onQuestionAdd}>Save</Button>

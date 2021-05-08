@@ -12,7 +12,7 @@ import {
   Typography,
   Slider,
 } from "@material-ui/core";
-import {addTopicLevel} from "../../../api/levelApi";
+import {addTopicLevel} from "../../api/levelApi";
 
 const NewTopicForm = () => {
   const {topicId} = useParams();
@@ -29,7 +29,7 @@ const NewTopicForm = () => {
     try {
       setLoading(true);
       await addTopicLevel(topicId, {name, description, priority});
-      navigate(`/backoffice/topics/${topicId}`);
+      navigate(`/topics/${topicId}`);
     } catch (e) {
       setError(true);
       setLoading(false);

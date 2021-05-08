@@ -53,9 +53,8 @@ export const updateQuestion = async (id, payload) => {
     body: JSON.stringify(payload),
   });
   if (!response.ok) {
-    throw Error(`Cannot update question: ${response.text()}`);
+    throw Error();
   }
-  return response.json();
 };
 
 export const deleteQuestion = async (id) => {

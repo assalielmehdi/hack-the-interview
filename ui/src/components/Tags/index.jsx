@@ -9,7 +9,7 @@ import {
   Button,
 } from "@material-ui/core";
 import DataLoader from "../DataLoader";
-import {getTags, addTag, deleteTag} from "../../../api/tagApi";
+import {getTags, addTag, deleteTag} from "../../api/tagApi";
 
 const Tags = () => {
   const [tags, setTags] = useState([]);

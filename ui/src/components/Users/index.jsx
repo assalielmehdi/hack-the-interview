@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 import SearchOutlinedIcon from "@material-ui/icons/SearchOutlined";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import {getUsers} from "../../../api/userApi";
+import {getUsers} from "../../api/userApi";
 import DataLoader from "../DataLoader";
 
 const columns = [
@@ -158,7 +158,7 @@ const Users = () => {
                               );
                             })}
                           <TableCell>
-                            <RouterLink to={`/backoffice/users/${user.id}`}>
+                            <RouterLink to={`/users/${user.id}`}>
                               <IconButton sx={{color: "text.primary"}}>
                                 <OpenInNewIcon fontSize="small"/>
                               </IconButton>

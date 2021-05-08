@@ -11,9 +11,12 @@ export const ThemeContext = React.createContext({});
 const App = () => {
   const routing = useRoutes(routes);
 
-  const [activeTheme, setActiveTheme] = useState(lightTheme);
+  const [activeTheme, setActiveTheme] = useState(
+    localStorage.getItem("theme") === "dark" ? darkTheme : lightTheme
+  );
 
   const toggleTheme = () => {
+    localStorage.setItem("theme", activeTheme === lightTheme ? "dark" : "false");
     setActiveTheme(activeTheme === lightTheme ? darkTheme : lightTheme);
   };
 

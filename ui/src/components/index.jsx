@@ -2,8 +2,8 @@ import React, {useState} from "react";
 import Helmet from "react-helmet";
 import {Outlet} from "react-router-dom";
 import {experimentalStyled} from "@material-ui/core";
-import BackofficeNavbar from "./components/Navbar";
-import BackofficeSidebar from "./components/Sidebar";
+import BackofficeNavbar from "./Navbar";
+import BackofficeSidebar from "./Sidebar";
 
 const BackofficeLayoutRoot = experimentalStyled("div")(({theme}) => ({
   backgroundColor: theme.palette.background.default,
