@@ -2,6 +2,7 @@ package com.hacktheinterview.core.services;
 
 import com.hacktheinterview.core.dto.Progress;
 import com.hacktheinterview.core.exceptions.NotFoundException;
+import com.hacktheinterview.core.mappers.ProgressMapper;
 import com.hacktheinterview.core.models.*;
 import com.hacktheinterview.core.repositories.*;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,15 +32,36 @@ public class ProgressServiceImpl implements ProgressService {
 
   private final UserTopicLevelRepository userTopicLevelRepository;
 
+  private final UserProgressCacheRepository userProgressCacheRepository;
+
+  private final ProgressMapper progressMapper;
+
   @Override
   public Progress getProgress(String email) {
-    User user = userRepository.findByEmail(email)
+    var user = userRepository.findByEmail(email)
       .orElseThrow(() -> {
-        String notFoundMessage = String.format("User with email %s not found", email);
+        var notFoundMessage = String.format("User with email %s not found", email);
         log.info(notFoundMessage);
         return new NotFoundException(notFoundMessage);
       });
 
+    Optional<UserProgressCache> userProgressCacheOptional = userProgressCacheRepository.findByEmail(email);
+
+    if (userProgressCacheOptional.isPresent()) {
+      return progressMapper.fromJson(userProgressCacheOptional.get().getProgressCache());
+    }
+
+    var progress = computeProgress(user);
+
+    var userProgressCache = new UserProgressCache();
+    userProgressCache.setEmail(email);
+    userProgressCache.setProgressCache(progressMapper.toJson(progress));
+    userProgressCacheRepository.save(userProgressCache);
+
+    return progress;
+  }
+
+  private Progress computeProgress(User user) {
     List<Topic> topics = topicRepository.findAll();
 
     topics.forEach(topic -> fillTopic(user, topic));
