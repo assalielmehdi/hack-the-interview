@@ -1,31 +1,35 @@
 import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {
+  Alert,
   Box,
+  Button,
   Container,
   FormControl,
-  InputLabel,
   Input,
-  Button,
+  InputLabel,
   LinearProgress,
-  Alert,
+  Slider,
+  Typography,
 } from "@material-ui/core";
-import {addTopic} from "../../api/topicApi";
+import {addTopicLevel} from "../../api/levelApi";
 
 const NewTopicForm = () => {
+  const {topicId} = useParams();
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-
+  const [priority, setPriority] = useState(5);
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
 
   const navigate = useNavigate();
 
-  const onTopicAdd = async () => {
+  const onLevelAdd = async () => {
     try {
       setLoading(true);
-      await addTopic({name, description});
-      navigate("/topics");
+      await addTopicLevel(topicId, {name, description, priority});
+      navigate(`/topics/${topicId}`);
     } catch (e) {
       setError(true);
       setLoading(false);
@@ -68,8 +72,24 @@ const NewTopicForm = () => {
             onChange={(e) => setDescription(e.target.value)}
           />
         </FormControl>
+        <Box mt={2} maxWidth={400}>
+          <Typography variant="caption" color="text.secondary">
+            Priority
+          </Typography>
+          <Slider
+            value={priority}
+            valueLabelDisplay="off"
+            step={1}
+            marks={Array.from(Array(11).keys())
+              .slice(1)
+              .map((value) => ({value, label: value}))}
+            min={1}
+            max={10}
+            onChange={(e) => setPriority(e.target.value)}
+          />
+        </Box>
         <Box mt={2} display="flex" justifyContent="flex-end">
-          <Button onClick={onTopicAdd}>Save</Button>
+          <Button onClick={onLevelAdd}>Save</Button>
         </Box>
       </Container>
     </Box>

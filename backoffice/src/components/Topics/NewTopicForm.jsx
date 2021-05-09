@@ -1,35 +1,22 @@
 import {useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
-import {
-  Box,
-  Container,
-  FormControl,
-  InputLabel,
-  Input,
-  Button,
-  LinearProgress,
-  Alert,
-  Typography,
-  Slider,
-} from "@material-ui/core";
-import {addTopicLevel} from "../../api/levelApi";
+import {useNavigate} from "react-router-dom";
+import {Alert, Box, Button, Container, FormControl, Input, InputLabel, LinearProgress,} from "@material-ui/core";
+import {addTopic} from "../../api/topicApi";
 
 const NewTopicForm = () => {
-  const {topicId} = useParams();
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState(5);
+
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
 
   const navigate = useNavigate();
 
-  const onLevelAdd = async () => {
+  const onTopicAdd = async () => {
     try {
       setLoading(true);
-      await addTopicLevel(topicId, {name, description, priority});
-      navigate(`/topics/${topicId}`);
+      await addTopic({name, description});
+      navigate("/topics");
     } catch (e) {
       setError(true);
       setLoading(false);
@@ -72,24 +59,8 @@ const NewTopicForm = () => {
             onChange={(e) => setDescription(e.target.value)}
           />
         </FormControl>
-        <Box mt={2} maxWidth={400}>
-          <Typography variant="caption" color="text.secondary">
-            Priority
-          </Typography>
-          <Slider
-            value={priority}
-            valueLabelDisplay="off"
-            step={1}
-            marks={Array.from(Array(11).keys())
-              .slice(1)
-              .map((value) => ({value, label: value}))}
-            min={1}
-            max={10}
-            onChange={(e) => setPriority(e.target.value)}
-          />
-        </Box>
         <Box mt={2} display="flex" justifyContent="flex-end">
-          <Button onClick={onLevelAdd}>Save</Button>
+          <Button onClick={onTopicAdd}>Save</Button>
         </Box>
       </Container>
     </Box>

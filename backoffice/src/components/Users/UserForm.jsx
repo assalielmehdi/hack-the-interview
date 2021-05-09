@@ -1,16 +1,7 @@
-import {useState, useEffect} from "react";
-import {useParams, useNavigate} from "react-router-dom";
-import {
-  Box,
-  Container,
-  FormControl,
-  InputLabel,
-  Input,
-  Button,
-  Alert,
-  LinearProgress,
-} from "@material-ui/core";
-import {getUser, updateUser, deleteUser} from "../../api/userApi";
+import {useEffect, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
+import {Alert, Box, Button, Container, FormControl, Input, InputLabel, LinearProgress,} from "@material-ui/core";
+import {deleteUser, getUser, updateUser} from "../../api/userApi";
 import DataLoader from "../DataLoader";
 
 const UserForm = () => {

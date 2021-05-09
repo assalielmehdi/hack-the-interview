@@ -1,4 +1,4 @@
-import {Button, Box, Typography, LinearProgress} from "@material-ui/core";
+import {Box, Button, LinearProgress, Typography} from "@material-ui/core";
 
 const DataLoader = ({isLoading, isError, onReload, children}) => {
   return (

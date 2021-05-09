@@ -1,44 +1,41 @@
-import {useState, useEffect} from "react";
-import {useParams, useNavigate, Link as RouterLink} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import {
+  Alert,
   Box,
+  Button,
+  Chip,
   Container,
   FormControl,
-  InputLabel,
-  Input,
-  Button,
-  Typography,
   Grid,
   IconButton,
-  Paper,
+  Input,
+  InputLabel,
+  LinearProgress,
   List,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
-  Alert,
-  LinearProgress,
-  Rating,
-  Slider,
+  ListItemText,
+  Paper,
+  Typography,
 } from "@material-ui/core";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import {getLevel, updateLevel, deleteLevel} from "../../api/levelApi";
-import {getLevelQuestions} from "../../api/questionApi";
+import {deleteTopic, getTopic, updateTopic} from "../../api/topicApi";
+import {getTopicLevels} from "../../api/levelApi";
 import DataLoader from "../DataLoader";
 
-const LevelQuestion = ({id, name, difficulty}, topicId, levelId) => (
-  <Grid key={`level-question-${id}`} item sx={{mt: 1}} xs={12} sm={6} md={4}>
+const TopicLevel = ({id, name, priority}, topicId) => (
+  <Grid key={`topic-level-${id}`} item sx={{mt: 1}} xs={12} sm={6} md={4}>
     <Paper elevation={2}>
       <List dense={false}>
         <ListItem>
-          <ListItemText sx={{mr: 2, overflow: "hidden"}}>{name}</ListItemText>
-          <Rating
-            name="half-rating-read"
-            defaultValue={difficulty / 2}
-            precision={0.5}
-            readOnly
+          <ListItemText primary={name} sx={{mr: 2, overflow: "hidden"}}/>
+          <Chip
+            label={`${priority}`}
+            sx={{mr: 1, backgroundColor: "background.paper"}}
           />
           <ListItemSecondaryAction>
-            <RouterLink to={`/topics/${topicId}/levels/${levelId}/questions/${id}`}>
+            <RouterLink to={`/topics/${topicId}/levels/${id}`}>
               <IconButton edge="end" sx={{color: "text.primary"}}>
                 <OpenInNewIcon/>
               </IconButton>
@@ -50,14 +47,13 @@ const LevelQuestion = ({id, name, difficulty}, topicId, levelId) => (
   </Grid>
 );
 
-const LevelForm = () => {
-  const {topicId, levelId} = useParams();
+const TopicForm = () => {
+  const {id} = useParams();
 
-  const [level, setLevel] = useState({});
+  const [topic, setTopic] = useState({});
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState(5);
-  const [questions, setQuestions] = useState([]);
+  const [levels, setLevels] = useState([]);
 
   const [isFetchLoading, setFetchLoading] = useState(true);
   const [isLoading, setLoading] = useState(false);
@@ -66,42 +62,16 @@ const LevelForm = () => {
 
   const navigate = useNavigate();
 
-  const onLevelUpdate = async () => {
-    try {
-      setLoading(true);
-      await updateLevel(levelId, {name, description, priority});
-      navigate(`/topics/${topicId}`);
-    } catch (e) {
-      setLoading(false);
-      setError(true);
-    }
-  };
-
-  const onLevelDelete = async () => {
-    try {
-      setLoading(true);
-      await deleteLevel(levelId);
-      navigate(`/topics/${topicId}`);
-    } catch (e) {
-      setLoading(false);
-      setError(true);
-    }
-  };
-
   useEffect(() => {
-    const fetchLevel = async () => {
+    const fetchTopic = async () => {
       try {
-        const level = await getLevel(levelId);
-        const questions = await getLevelQuestions(levelId);
-        setLevel(level);
-        setName(level.name);
-        setDescription(level.description);
-        setPriority(level.priority);
-        setQuestions(
-          questions.sort(
-            (question1, question2) =>
-              question1.difficulty - question2.difficulty
-          )
+        const topic = await getTopic(id);
+        const levels = await getTopicLevels(id);
+        setTopic(topic);
+        setName(topic.name);
+        setDescription(topic.description);
+        setLevels(
+          levels.sort((level1, level2) => level1.priority - level2.priority)
         );
       } catch (e) {
         setFetchError(true);
@@ -110,8 +80,30 @@ const LevelForm = () => {
       }
     };
 
-    fetchLevel();
-  }, [isFetchLoading, levelId]);
+    fetchTopic();
+  }, [isFetchLoading, id]);
+
+  const onTopicUpdate = async () => {
+    try {
+      setLoading(true);
+      await updateTopic(id, {name, description});
+      navigate("/topics");
+    } catch (e) {
+      setLoading(false);
+      setError(true);
+    }
+  };
+
+  const onTopicDelete = async () => {
+    try {
+      setLoading(true);
+      await deleteTopic(id);
+      navigate("/topics");
+    } catch (e) {
+      setLoading(false);
+      setError(true);
+    }
+  };
 
   return (
     <DataLoader
@@ -128,14 +120,12 @@ const LevelForm = () => {
           minHeight: "100%",
         }}
       >
-        {!level && (
+        {!topic && (
           <Box sx={{width: "100%", p: 2}}>
-            <Alert severity="error">
-              Level with id={levelId} in Topic with id={topicId} not found!
-            </Alert>
+            <Alert severity="error">Topic with id={id} not found!</Alert>
           </Box>
         )}
-        {level && (
+        {topic && (
           <>
             {isLoading && (
               <Box sx={{width: "100%"}}>
@@ -167,22 +157,6 @@ const LevelForm = () => {
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </FormControl>
-              <Box mt={2} maxWidth={400}>
-                <Typography variant="caption" color="text.secondary">
-                  Priority
-                </Typography>
-                <Slider
-                  value={priority}
-                  valueLabelDisplay="off"
-                  step={1}
-                  marks={Array.from(Array(11).keys())
-                    .slice(1)
-                    .map((value) => ({value, label: value}))}
-                  min={1}
-                  max={10}
-                  onChange={(e) => setPriority(e.target.value)}
-                />
-              </Box>
               <Box my={2} sx={{flexGrow: 1}}>
                 <Grid container mb={3}>
                   <Grid
@@ -193,7 +167,7 @@ const LevelForm = () => {
                     alignItems="flex-end"
                   >
                     <Typography variant="caption" color="text.secondary">
-                      Questions
+                      Levels
                     </Typography>
                   </Grid>
                   <Grid
@@ -204,23 +178,21 @@ const LevelForm = () => {
                     alignItems="flex-end"
                     justifyContent="flex-end"
                   >
-                    <RouterLink
-                      to={`/topics/${topicId}/levels/${levelId}/add`}
-                    >
-                      <Button>Add Question</Button>
+                    <RouterLink to={`/topics/${id}/add`}>
+                      <Button>Add Level</Button>
                     </RouterLink>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
-                  {questions.map((question) => LevelQuestion(question, topicId, levelId))}
+                  {levels.map((topic) => TopicLevel(topic, id))}
                 </Grid>
               </Box>
               <Box mt={2} display="flex" justifyContent="flex-end">
-                <Button onClick={onLevelUpdate}>Update</Button>
+                <Button onClick={onTopicUpdate}>Update</Button>
                 <Button
                   sx={{ml: 2}}
                   color="secondary"
-                  onClick={onLevelDelete}
+                  onClick={onTopicDelete}
                 >
                   Delete
                 </Button>
@@ -233,4 +205,4 @@ const LevelForm = () => {
   );
 };
 
-export default LevelForm;
+export default TopicForm;

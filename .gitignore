@@ -22,6 +22,6 @@ api/.mvn
 
 ### UI ###
 
-ui/node_modules
+backoffice/node_modules
 
-ui/build
+backoffice/build

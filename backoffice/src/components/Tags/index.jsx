@@ -1,15 +1,7 @@
-import {useState, useEffect} from "react";
-import {
-  Box,
-  Container,
-  LinearProgress,
-  Alert,
-  Chip,
-  TextField,
-  Button,
-} from "@material-ui/core";
+import {useEffect, useState} from "react";
+import {Alert, Box, Button, Chip, Container, LinearProgress, TextField,} from "@material-ui/core";
 import DataLoader from "../DataLoader";
-import {getTags, addTag, deleteTag} from "../../api/tagApi";
+import {addTag, deleteTag, getTags} from "../../api/tagApi";
 
 const Tags = () => {
   const [tags, setTags] = useState([]);

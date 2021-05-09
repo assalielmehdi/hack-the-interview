@@ -3,7 +3,7 @@ import {useRoutes} from "react-router-dom";
 import {ThemeProvider} from "@material-ui/core";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import GlobalStyles from "./theme/GlobalStyles";
-import {lightTheme, darkTheme} from "./theme";
+import {darkTheme, lightTheme} from "./theme";
 import routes from "./routes";
 
 export const ThemeContext = React.createContext({});

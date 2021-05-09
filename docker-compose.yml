@@ -1,0 +1,37 @@
+networks:
+  hack-the-interview:
+
+services:
+  db:
+    image: mysql
+    expose:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=hacktheinterview
+    networks:
+      hack-the-interview:
+        aliases:
+          - db
+  api:
+    image: hacktheinterview/api
+    ports:
+      - 8080:80
+    environment:
+      - SERVER_PORT=80
+      - DB_HOST=db
+      - DB_PWD=${MYSQL_ROOT_PASSWORD}
+      - WAIT_HOSTS=db:3306
+      - WAIT_HOSTS_TIMEOUT=120
+    networks:
+      hack-the-interview:
+        aliases:
+          - api
+    depends_on:
+      - db
+  backoffice:
+    image: hacktheinterview/backoffice
+    ports:
+      - 3000:80
+    networks:
+      - hack-the-interview

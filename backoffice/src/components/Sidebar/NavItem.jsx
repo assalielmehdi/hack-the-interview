@@ -1,8 +1,4 @@
-import {
-  NavLink as RouterLink,
-  matchPath,
-  useLocation,
-} from "react-router-dom";
+import {matchPath, NavLink as RouterLink, useLocation,} from "react-router-dom";
 import {Button, ListItem} from "@material-ui/core";
 
 const NavItem = ({href, title, ...rest}) => {
