@@ -2,6 +2,7 @@ package com.hacktheinterview.core.services;
 
 import com.hacktheinterview.core.dto.Progress;
 import com.hacktheinterview.core.exceptions.NotFoundException;
+import com.hacktheinterview.core.mappers.ProgressMapper;
 import com.hacktheinterview.core.models.*;
 import com.hacktheinterview.core.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +15,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-public class ProgressServiceImplTest {
+class ProgressServiceImplTest {
 
   @Mock
   private UserRepository userRepository;
@@ -39,6 +39,12 @@ public class ProgressServiceImplTest {
 
   @Mock
   private UserTopicLevelRepository userTopicLevelRepository;
+
+  @Mock
+  private UserProgressCacheRepository userProgressCacheRepository;
+
+  @Mock
+  private ProgressMapper progressMapper;
 
   @InjectMocks
   private ProgressServiceImpl progressServiceImpl;
@@ -157,5 +163,47 @@ public class ProgressServiceImplTest {
     Tag questionTag = levelQuestion.getTags().get(0);
 
     assertEquals(tag, questionTag);
+  }
+
+  @Test
+  void givenUserProgressCacheGetProgressShouldNotRecompute() {
+    // Given
+    String email = "email";
+    User user = mock(User.class);
+    UserProgressCache userProgressCache = mock(UserProgressCache.class);
+    String progressCache = "progressCache";
+
+    when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+    when(userProgressCacheRepository.findByEmail(email)).thenReturn(Optional.of(userProgressCache));
+    when(userProgressCache.getProgressCache()).thenReturn(progressCache);
+    when(progressMapper.fromJson(progressCache)).thenReturn(null);
+
+    // When
+    progressServiceImpl.getProgress(email);
+
+    // Then
+    verify(progressMapper).fromJson(progressCache);
+    verify(userProgressCacheRepository, never()).save(any());
+  }
+
+  @Test
+  void givenNotUserProgressCacheGetProgressShouldRecompute() {
+    // Given
+    String email = "email";
+    User user = mock(User.class);
+    String progressCache = "progressCache";
+
+    when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+    when(userProgressCacheRepository.findByEmail(email)).thenReturn(Optional.empty());
+    when(topicRepository.findAll()).thenReturn(List.of());
+    when(progressMapper.toJson(any())).thenReturn(progressCache);
+    when(userProgressCacheRepository.save(any())).thenReturn(null);
+
+    // When
+    progressServiceImpl.getProgress(email);
+
+    // Then
+    verify(progressMapper).toJson(any());
+    verify(userProgressCacheRepository).save(any());
   }
 }
