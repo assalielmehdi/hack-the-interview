@@ -1,12 +1,5 @@
 import {Link as RouterLink} from "react-router-dom";
-import {
-  Box,
-  Card,
-  Typography,
-  CardContent,
-  CardActions,
-  Button,
-} from "@material-ui/core";
+import {Box, Button, Card, CardActions, CardContent, Typography,} from "@material-ui/core";
 
 const NotFound = () => (
   <Box

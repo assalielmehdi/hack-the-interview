@@ -1,13 +1,5 @@
-import {useLocation, Link as RouterLink} from "react-router-dom";
-import {
-  AppBar,
-  Box,
-  Hidden,
-  IconButton,
-  Toolbar,
-  Typography,
-  Breadcrumbs,
-} from "@material-ui/core";
+import {Link as RouterLink, useLocation} from "react-router-dom";
+import {AppBar, Box, Breadcrumbs, Hidden, IconButton, Toolbar, Typography,} from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 
 const BackofficeNavbar = ({onMobileNavOpen, ...rest}) => {

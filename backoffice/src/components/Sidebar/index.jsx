@@ -1,14 +1,6 @@
-import {useEffect, useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {useLocation} from "react-router-dom";
-import {
-  Box,
-  Drawer,
-  Hidden,
-  List,
-  Typography,
-  Grid,
-  Switch,
-} from "@material-ui/core";
+import {Box, Drawer, Grid, Hidden, List, Switch, Typography,} from "@material-ui/core";
 import Brightness5Icon from "@material-ui/icons/Brightness5";
 import Brightness2Icon from "@material-ui/icons/Brightness2";
 import NavItem from "./NavItem";
